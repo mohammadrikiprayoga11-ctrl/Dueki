@@ -3,144 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Dompetku Pro v10.4 - Balanced UI</title>
-    <meta name="theme-color" content="#4f46e5">
+    <title>Dompetku Pro v10.4 - Aesthetic Giant</title>
+    <meta name="theme-color" content="#6366f1">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
         
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif;
             -webkit-tap-highlight-color: transparent; 
-            /* Padding disesuaikan karena navigasi lebih pendek */
-            padding-bottom: 250px; 
-            background-color: #F8FAFC;
+            padding-bottom: 220px; 
+            background: linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%);
+            color: #1e293b;
         }
 
+        /* Header dengan Gradasi Halus */
         .glass-header {
-            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
-            padding-top: 80px;
-            padding-bottom: 80px;
-            border-bottom-left-radius: 80px;
-            border-bottom-right-radius: 80px;
+            background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+            padding: 100px 40px 120px 40px;
+            border-bottom-left-radius: 100px;
+            border-bottom-right-radius: 100px;
+            box-shadow: 0 20px 50px rgba(99, 102, 241, 0.3);
         }
 
-        /* NAVIGASI DITURUNKAN SETENGAH (Dari 300px ke 150px) */
+        /* Navigasi Modern (Glassmorphism) */
         .nav-blur {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            height: 150px; 
-            border-top: 2px solid #e2e8f0;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            height: 160px; 
+            border-top: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.05);
         }
 
+        /* Kartu dengan Soft Shadow */
         .card-neo {
             background: #ffffff;
-            border: 4px solid #e2e8f0;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
-            border-radius: 60px;
-            padding: 50px;
-            margin-bottom: 40px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.05);
+            border-radius: 70px;
+            padding: 55px;
+            margin-bottom: 50px;
+            transition: all 0.3s ease;
         }
 
-        .page { display: none; opacity: 0; transform: translateY(20px); transition: all 0.3s ease; }
+        .page { display: none; opacity: 0; transform: translateY(30px); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
         .page-active { display: block; opacity: 1; transform: translateY(0); }
 
-        /* Tombol & Input Tetap Ukuran Raksasa */
+        /* Input yang Lebih Soft */
+        input, select, textarea { 
+            height: 130px !important;
+            font-size: 2.2rem !important;
+            border-radius: 40px !important;
+            border: 3px solid #e2e8f0 !important;
+            padding: 0 45px !important;
+            margin-bottom: 35px;
+            width: 100%;
+            background-color: #f8fafc;
+            transition: all 0.2s ease;
+        }
+        
+        input:focus {
+            border-color: #6366f1 !important;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 10px rgba(99, 102, 241, 0.1);
+            outline: none;
+        }
+
+        /* Tombol dengan Efek Depth */
         .btn-giant {
             height: 180px;
             border-radius: 50px;
             font-weight: 800;
-            font-size: 2.5rem; 
+            font-size: 2.6rem; 
             display: flex;
             align-items: center;
             justify-content: center;
             width: 100%;
             margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
         }
+        .btn-giant:active { transform: scale(0.96); opacity: 0.9; }
 
-        input, select { 
-            height: 130px !important;
-            font-size: 2.2rem !important;
-            border-radius: 40px !important;
-            border: 5px solid #cbd5e1 !important;
-            padding: 0 40px !important;
-            margin-bottom: 30px;
-            width: 100%;
+        .nav-icon-box { transition: all 0.3s ease; transform: scale(1.6); }
+        .nav-label { font-size: 1.3rem; font-weight: 700; margin-top: 10px; letter-spacing: 0.5px; }
+        
+        /* Badge Riwayat */
+        .type-badge {
+            width: 110px;
+            height: 110px;
+            border-radius: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
         }
-
-        /* IKON NAVIGASI DITURUNKAN SETENGAH SKALANYA */
-        .nav-icon-box { transform: scale(1.5); margin-bottom: 15px; }
-        .nav-label { font-size: 1.2rem; font-weight: 900; }
     </style>
 </head>
-<body class="text-slate-900">
+<body>
 
-    <header class="glass-header px-10 text-white sticky top-0 z-40">
+    <header class="glass-header text-white sticky top-0 z-40">
         <div class="text-center">
-            <h1 class="text-3xl font-black opacity-50 uppercase tracking-[0.2em] mb-4">Dompetku Pro</h1>
-            <p class="text-2xl font-bold uppercase opacity-80 mb-2">Total Saldo</p>
-            <h1 id="total-balance" class="text-7xl font-black tracking-tighter">Rp 0</h1>
+            <h1 class="text-3xl font-bold opacity-70 uppercase tracking-[0.3em] mb-6">Wallet Pro</h1>
+            <p class="text-2xl font-semibold opacity-90 mb-2">Saldo Saat Ini</p>
+            <h1 id="total-balance" class="text-8xl font-black tracking-tight drop-shadow-2xl">Rp 0</h1>
         </div>
     </header>
 
-    <main class="max-w-4xl mx-auto px-8 pt-12">
+    <main class="max-w-4xl mx-auto px-10 pt-16">
+        
         <div id="page-home" class="page page-active">
-            <div class="card-neo bg-indigo-50/50">
-                <h2 class="text-3xl font-black text-indigo-600 mb-6 uppercase text-center">Filter Tanggal</h2>
-                <div class="space-y-4">
+            <div class="card-neo" style="background: linear-gradient(145deg, #ffffff, #f1f5f9);">
+                <h2 class="text-4xl font-extrabold text-slate-800 mb-10 text-center uppercase tracking-wider">📅 Filter Data</h2>
+                <div class="space-y-6">
                     <input id="f-start" onchange="render()" type="date">
                     <input id="f-end" onchange="render()" type="date">
-                    <button onclick="resetFilter()" class="h-20 w-full bg-slate-200 rounded-[25px] text-xl font-black text-slate-600">RESET FILTER</button>
+                    <button onclick="resetFilter()" class="h-24 w-full bg-slate-800 rounded-[35px] text-2xl font-bold text-white shadow-lg">BERSIHKAN FILTER</button>
                 </div>
             </div>
+
             <div class="card-neo">
-                <div class="h-[500px]"><canvas id="myChart"></canvas></div>
+                <div class="h-[550px]"><canvas id="myChart"></canvas></div>
             </div>
-            <div id="list" class="space-y-8"></div>
+
+            <h3 class="text-5xl font-extrabold mb-12 text-slate-800 flex items-center gap-4">
+                <span class="w-4 h-16 bg-indigo-600 rounded-full"></span> 
+                AKTIVITAS
+            </h3>
+            <div id="list" class="space-y-10"></div>
         </div>
 
         <div id="page-add" class="page">
             <div class="card-neo">
-                <h2 class="text-5xl font-black text-center mb-10 text-indigo-600 uppercase">Input Data</h2>
-                <input id="date-input" type="date">
-                <input id="desc" type="text" placeholder="Keterangan">
-                <input id="amount" type="number" placeholder="Nominal Rp" class="text-indigo-600 font-black">
-                <div class="pt-4">
-                    <button onclick="save('income')" class="btn-giant bg-emerald-500 text-white shadow-2xl">SIMPAN MASUK</button>
-                    <button onclick="save('expense')" class="btn-giant bg-rose-500 text-white shadow-2xl">SIMPAN KELUAR</button>
+                <h2 class="text-6xl font-black text-center mb-16 text-indigo-600">INPUT BARU</h2>
+                
+                <div class="space-y-2">
+                    <p class="text-2xl font-bold text-slate-400 ml-6 mb-4">PILIH TANGGAL</p>
+                    <input id="date-input" type="date">
+                </div>
+
+                <div class="space-y-2">
+                    <p class="text-2xl font-bold text-slate-400 ml-6 mb-4">DESKRIPSI</p>
+                    <input id="desc" type="text" placeholder="Keperluan apa?">
+                </div>
+
+                <div class="space-y-2">
+                    <p class="text-2xl font-bold text-slate-400 ml-6 mb-4">JUMLAH (RP)</p>
+                    <input id="amount" type="number" placeholder="0" class="text-indigo-600 font-black">
+                </div>
+
+                <div class="pt-10 flex flex-col gap-6">
+                    <button onclick="save('income')" class="btn-giant bg-emerald-500 text-white shadow-emerald-200">UANG MASUK</button>
+                    <button onclick="save('expense')" class="btn-giant bg-rose-500 text-white shadow-rose-200">UANG KELUAR</button>
                 </div>
             </div>
         </div>
 
         <div id="page-notes" class="page">
             <div class="card-neo">
-                <h2 class="text-5xl font-black text-center mb-10">CATATAN</h2>
-                <textarea id="note-input" class="w-full text-3xl p-8 rounded-[40px] border-4 border-slate-200 mb-8" style="height: 400px;" placeholder="Tulis catatan..."></textarea>
-                <button onclick="saveNote()" class="btn-giant bg-slate-900 text-white">SIMPAN</button>
+                <h2 class="text-6xl font-black text-center mb-16">NOTEBOOK</h2>
+                <textarea id="note-input" class="w-full text-3xl p-10 rounded-[50px] border-4 border-slate-100 bg-slate-50 mb-10" style="height: 450px;" placeholder="Tulis sesuatu di sini..."></textarea>
+                <button onclick="saveNote()" class="btn-giant bg-slate-900 text-white">SIMPAN CATATAN</button>
             </div>
-            <div id="note-list" class="mt-12 space-y-8"></div>
+            <div id="note-list" class="mt-16 space-y-10"></div>
         </div>
     </main>
 
-    <nav class="fixed bottom-0 left-0 right-0 nav-blur flex justify-around items-center z-50">
+    <nav class="fixed bottom-0 left-0 right-0 nav-blur flex justify-around items-center z-50 rounded-t-[80px]">
         <button onclick="showPage('home')" id="nav-home" class="flex flex-col items-center text-indigo-600">
-            <div class="nav-icon-box"><svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg></div>
-            <span class="nav-label uppercase">Beranda</span>
+            <div class="nav-icon-box"><svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg></div>
+            <span class="nav-label">BERANDA</span>
         </button>
         <button onclick="showPage('add')" id="nav-add" class="flex flex-col items-center text-slate-400">
-            <div class="nav-icon-box"><svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg></div>
-            <span class="nav-label uppercase">Tambah</span>
+            <div class="nav-icon-box"><svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg></div>
+            <span class="nav-label">TAMBAH</span>
         </button>
         <button onclick="showPage('notes')" id="nav-notes" class="flex flex-col items-center text-slate-400">
-            <div class="nav-icon-box"><svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg></div>
-            <span class="nav-label uppercase">Catatan</span>
+            <div class="nav-icon-box"><svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></div>
+            <span class="nav-label">CATATAN</span>
         </button>
     </nav>
 
     <script>
-        let data = JSON.parse(localStorage.getItem('dompet_balanced')) || [];
-        let notes = JSON.parse(localStorage.getItem('notes_balanced')) || [];
+        let data = JSON.parse(localStorage.getItem('wallet_aesthetic')) || [];
+        let notes = JSON.parse(localStorage.getItem('notes_aesthetic')) || [];
         let myChart = null;
 
         function showPage(p) {
@@ -148,11 +196,12 @@
             document.getElementById('page-'+p).classList.add('page-active');
             ['home', 'add', 'notes'].forEach(nav => {
                 const el = document.getElementById('nav-'+nav);
-                el.className = (nav === p) ? "flex flex-col items-center text-indigo-600 scale-105" : "flex flex-col items-center text-slate-400";
+                const isActive = nav === p;
+                el.className = isActive ? "flex flex-col items-center text-indigo-600 scale-110" : "flex flex-col items-center text-slate-400";
             });
             if(p === 'home') render();
             if(p === 'notes') renderNotes();
-            window.scrollTo(0,0);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function resetFilter() {
@@ -172,12 +221,15 @@
                 if((!fStart || item.date >= fStart) && (!fEnd || item.date <= fEnd)) {
                     if(item.type === 'income') tin += item.val; else tout += item.val;
                     list.innerHTML += `
-                        <div class="card-neo flex justify-between items-center">
-                            <div>
-                                <p class="text-2xl text-slate-400 font-bold uppercase">${item.date}</p>
-                                <p class="text-4xl font-black text-slate-800">${item.desc}</p>
+                        <div class="card-neo flex items-center gap-8 bg-white overflow-hidden">
+                            <div class="type-badge ${item.type==='income'?'bg-emerald-100 text-emerald-600':'bg-rose-100 text-rose-600'}">
+                                ${item.type==='income'?'💰':'💸'}
                             </div>
-                            <p class="text-4xl font-black ${item.type==='income'?'text-emerald-500':'text-rose-500'}">
+                            <div class="flex-1">
+                                <p class="text-2xl text-slate-400 font-bold mb-1">${item.date}</p>
+                                <p class="text-4xl font-extrabold text-slate-800">${item.desc}</p>
+                            </div>
+                            <p class="text-5xl font-black ${item.type==='income'?'text-emerald-500':'text-rose-500'}">
                                 ${item.type==='income'?'+':'-'}${item.val.toLocaleString()}
                             </p>
                         </div>`;
@@ -192,8 +244,18 @@
             if(myChart) myChart.destroy();
             myChart = new Chart(ctx, {
                 type: 'doughnut',
-                data: { datasets: [{ data: [tin||1, tout||0], backgroundColor: ['#10b981', '#f43f5e'], borderWidth: 10 }] },
-                options: { cutout: '75%', plugins: { legend: { display: false } }, maintainAspectRatio: false }
+                data: { datasets: [{ 
+                    data: [tin||1, tout||0], 
+                    backgroundColor: ['#10b981', '#f43f5e'],
+                    hoverOffset: 20,
+                    borderWidth: 0
+                }]},
+                options: { 
+                    cutout: '80%', 
+                    plugins: { legend: { display: false } }, 
+                    maintainAspectRatio: false,
+                    animation: { animateScale: true }
+                }
             });
         }
 
@@ -201,9 +263,9 @@
             const val = parseInt(document.getElementById('amount').value);
             const desc = document.getElementById('desc').value;
             const date = document.getElementById('date-input').value;
-            if(!val || !desc || !date) return alert("DATA KOSONG!");
+            if(!val || !desc || !date) return alert("Mohon lengkapi data!");
             data.push({val, desc, date, type});
-            localStorage.setItem('dompet_balanced', JSON.stringify(data));
+            localStorage.setItem('wallet_aesthetic', JSON.stringify(data));
             document.getElementById('amount').value = '';
             document.getElementById('desc').value = '';
             showPage('home');
@@ -213,7 +275,7 @@
             const text = document.getElementById('note-input').value;
             if(!text) return;
             notes.unshift({ text, time: new Date().toLocaleDateString() });
-            localStorage.setItem('notes_balanced', JSON.stringify(notes));
+            localStorage.setItem('notes_aesthetic', JSON.stringify(notes));
             document.getElementById('note-input').value = '';
             renderNotes();
         }
@@ -222,7 +284,9 @@
             const nl = document.getElementById('note-list');
             nl.innerHTML = '';
             notes.forEach(n => {
-                nl.innerHTML += `<div class="card-neo"><p class="text-3xl font-bold">${n.text}</p></div>`;
+                nl.innerHTML += `<div class="card-neo" style="border-left: 15px solid #6366f1">
+                    <p class="text-3xl font-bold text-slate-700 leading-relaxed">${n.text}</p>
+                </div>`;
             });
         }
 
