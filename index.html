@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Catatanku - Dual Notes</title>
+    <title>Catatanku - Dynamic Tabs</title>
     <meta name="theme-color" content="#6366f1">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -13,212 +13,263 @@
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif;
             -webkit-tap-highlight-color: transparent; 
-            padding-bottom: 220px; 
+            padding-bottom: 250px; 
             background: #F8FAFC;
         }
 
         .glass-header {
             background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
-            padding: 100px 40px 120px 40px;
-            border-bottom-left-radius: 100px;
-            border-bottom-right-radius: 100px;
+            padding: 80px 40px 100px 40px;
+            border-bottom-left-radius: 80px;
+            border-bottom-right-radius: 80px;
             box-shadow: 0 20px 50px rgba(99, 102, 241, 0.3);
         }
 
         .nav-blur {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(25px);
-            height: 160px; 
-            border-top: 1px solid rgba(226, 232, 240, 0.8);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            height: auto;
+            min-height: 160px;
+            border-top: 2px solid #e2e8f0;
+            padding: 20px 10px;
         }
 
         .card-neo {
             background: #ffffff;
             border: 1px solid rgba(226, 232, 240, 0.8);
-            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.05);
-            border-radius: 60px;
-            padding: 50px;
-            margin-bottom: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.05);
+            border-radius: 50px;
+            padding: 40px;
+            margin-bottom: 30px;
         }
 
-        .page { display: none; opacity: 0; transform: translateY(30px); transition: all 0.4s ease; }
+        .page { display: none; opacity: 0; transform: translateY(20px); transition: all 0.3s ease; }
         .page-active { display: block; opacity: 1; transform: translateY(0); }
 
-        .input-group { background: #f8fafc; padding: 30px; border-radius: 40px; margin-bottom: 20px; }
-        .input-label { font-size: 1.2rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 5px; display: block; }
-        
-        input { height: 70px !important; font-size: 2rem !important; font-weight: 700 !important; border: none !important; width: 100%; background: transparent !important; outline: none !important; }
+        .input-group { background: #f8fafc; padding: 25px; border-radius: 35px; margin-bottom: 15px; }
+        input { font-size: 1.8rem !important; font-weight: 700; width: 100%; background: transparent; outline: none; }
 
-        .btn-save { height: 100px; border-radius: 30px; width: 100%; font-weight: 800; font-size: 1.5rem; color: white; background: #1e293b; margin-top: 20px; }
-        .btn-save:active { transform: scale(0.96); }
+        .nav-scroll {
+            display: flex;
+            overflow-x: auto;
+            gap: 20px;
+            padding: 10px;
+            scrollbar-width: none;
+        }
+        .nav-scroll::-webkit-scrollbar { display: none; }
 
-        .nav-icon-box { transform: scale(1.4); margin-bottom: 8px; }
-        .nav-label { font-size: 0.9rem; font-weight: 800; }
-        
-        .recap-bar { height: 20px; border-radius: 10px; background: #e2e8f0; overflow: hidden; margin: 20px 0; }
-        .recap-fill { height: 100%; transition: width 1s ease-in-out; }
+        .tab-btn {
+            flex: 0 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 120px;
+            transition: all 0.3s;
+        }
+
+        .btn-add-tab {
+            background: #6366f1;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-weight: 800;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
 
     <header class="glass-header text-white text-center">
-        <h1 class="text-3xl font-bold opacity-70 uppercase tracking-[0.3em] mb-4">Catatanku</h1>
-        <p class="text-2xl font-semibold opacity-90">Total Saldo</p>
-        <h1 id="total-balance" class="text-7xl font-black tracking-tight">Rp 0</h1>
+        <h1 class="text-2xl font-bold opacity-70 uppercase tracking-widest mb-2">Catatanku</h1>
+        <p class="text-xl font-semibold opacity-90">Total Saldo</p>
+        <h1 id="total-balance" class="text-6xl font-black tracking-tight">Rp 0</h1>
     </header>
 
-    <main class="max-w-4xl mx-auto px-8 pt-12">
+    <main class="max-w-4xl mx-auto px-6 pt-10">
         
         <div id="page-home" class="page page-active">
-            <div class="card-neo"><div class="h-[400px]"><canvas id="myChart"></canvas></div></div>
-            <div id="list" class="space-y-6"></div>
+            <div class="card-neo"><div class="h-[350px]"><canvas id="myChart"></canvas></div></div>
+            <div id="list" class="space-y-4"></div>
         </div>
 
         <div id="page-add" class="page">
             <div class="card-neo">
-                <h2 class="text-4xl font-black mb-8 text-center text-indigo-600">TRANSAKSI UTAMA</h2>
-                <div class="input-group"><label class="input-label">Tanggal</label><input id="date-input" type="date"></div>
-                <div class="input-group"><label class="input-label">Keterangan</label><input id="desc" type="text" placeholder="Keperluan..."></div>
-                <div class="input-group" style="border-left: 10px solid #6366f1;"><label class="input-label">Nominal</label><input id="amount" type="number" placeholder="0"></div>
-                <div class="grid grid-cols-2 gap-4 mt-8">
-                    <button onclick="save('income')" class="h-24 bg-emerald-500 rounded-3xl text-white font-bold text-xl">📥 MASUK</button>
-                    <button onclick="save('expense')" class="h-24 bg-rose-500 rounded-3xl text-white font-bold text-xl">📤 KELUAR</button>
+                <h2 class="text-3xl font-black mb-6 text-center text-indigo-600">TRANSAKSI</h2>
+                <div class="input-group"><input id="date-input" type="date"></div>
+                <div class="input-group"><input id="desc" type="text" placeholder="Keterangan..."></div>
+                <div class="input-group"><input id="amount" type="number" placeholder="Nominal Rp"></div>
+                <div class="grid grid-cols-2 gap-4 mt-6">
+                    <button onclick="saveTransaction('income')" class="h-20 bg-emerald-500 rounded-3xl text-white font-bold text-xl">📥 MASUK</button>
+                    <button onclick="saveTransaction('expense')" class="h-20 bg-rose-500 rounded-3xl text-white font-bold text-xl">📤 KELUAR</button>
                 </div>
             </div>
         </div>
 
         <div id="page-recap" class="page">
-            <h2 class="text-4xl font-black mb-8 px-4">REKAP BULANAN</h2>
-            <div id="recap-container" class="space-y-8"></div>
+            <h2 class="text-3xl font-black mb-6 text-center">REKAP BULANAN</h2>
+            <div id="recap-container" class="space-y-6"></div>
         </div>
 
-        <div id="page-notes" class="page">
-            <div class="card-neo">
-                <h2 class="text-3xl font-black mb-6 uppercase text-slate-500 tracking-widest">Catatan Umum</h2>
-                <textarea id="note-input" class="w-full text-2xl p-6 rounded-[30px] border-2 border-slate-100 bg-slate-50 outline-none" style="height: 350px;" placeholder="Tulis catatan harian..."></textarea>
-                <button onclick="saveNote(1)" class="btn-save">SIMPAN KE GRUP 1</button>
-            </div>
-            <div id="note-list-1" class="space-y-6"></div>
-        </div>
+        <div id="dynamic-pages"></div>
 
-        <div id="page-notes2" class="page">
-            <div class="card-neo">
-                <h2 class="text-3xl font-black mb-6 uppercase text-indigo-500 tracking-widest">Catatan Khusus</h2>
-                <textarea id="note-input-2" class="w-full text-2xl p-6 rounded-[30px] border-2 border-indigo-50 bg-indigo-50 outline-none" style="height: 350px;" placeholder="Tulis catatan proyek/bisnis..."></textarea>
-                <button onclick="saveNote(2)" class="btn-save" style="background: #6366f1;">SIMPAN KE GRUP 2</button>
+        <div id="page-settings" class="page">
+            <div class="card-neo text-center">
+                <h2 class="text-3xl font-black mb-6">Manajer Tab</h2>
+                <input id="new-tab-name" type="text" placeholder="Nama Tab Baru..." class="p-4 bg-slate-100 rounded-2xl mb-4 text-center">
+                <button onclick="addNewTab()" class="btn-add-tab w-full">＋ BUAT TAB BARU</button>
+                <p class="mt-6 text-slate-400 text-sm italic">Tab baru akan muncul di menu navigasi bawah</p>
             </div>
-            <div id="note-list-2" class="space-y-6"></div>
         </div>
     </main>
 
-    <nav class="fixed bottom-0 left-0 right-0 nav-blur flex justify-around items-center z-50 rounded-t-[60px] px-2">
-        <button onclick="showPage('home')" id="nav-home" class="flex flex-col items-center text-indigo-600">
-            <div class="nav-icon-box">🏠</div><span class="nav-label">HOME</span>
-        </button>
-        <button onclick="showPage('add')" id="nav-add" class="flex flex-col items-center text-slate-400">
-            <div class="nav-icon-box">➕</div><span class="nav-label">TAMBAH</span>
-        </button>
-        <button onclick="showPage('recap')" id="nav-recap" class="flex flex-col items-center text-slate-400">
-            <div class="nav-icon-box">📊</div><span class="nav-label">REKAP</span>
-        </button>
-        <button onclick="showPage('notes')" id="nav-notes" class="flex flex-col items-center text-slate-400">
-            <div class="nav-icon-box">📝</div><span class="nav-label">NOTE 1</span>
-        </button>
-        <button onclick="showPage('notes2')" id="nav-notes2" class="flex flex-col items-center text-slate-400">
-            <div class="nav-icon-box">📂</div><span class="nav-label">NOTE 2</span>
-        </button>
+    <nav class="fixed bottom-0 left-0 right-0 nav-blur z-50 rounded-t-[50px]">
+        <div class="nav-scroll" id="nav-container">
+            <button onclick="showPage('home')" id="nav-home" class="tab-btn text-indigo-600">
+                <span class="text-3xl">🏠</span><span class="nav-label">HOME</span>
+            </button>
+            <button onclick="showPage('add')" id="nav-add" class="tab-btn text-slate-400">
+                <span class="text-3xl">➕</span><span class="nav-label">TAMBAH</span>
+            </button>
+            <button onclick="showPage('recap')" id="nav-recap" class="tab-btn text-slate-400">
+                <span class="text-3xl">📊</span><span class="nav-label">REKAP</span>
+            </button>
+            <div id="dynamic-navs" class="flex gap-5"></div>
+            
+            <button onclick="showPage('settings')" id="nav-settings" class="tab-btn text-slate-400">
+                <span class="text-3xl">⚙️</span><span class="nav-label">TAB</span>
+            </button>
+        </div>
     </nav>
 
     <script>
-        let data = JSON.parse(localStorage.getItem('c_pro_v6_data')) || [];
-        let notes1 = JSON.parse(localStorage.getItem('c_pro_v6_n1')) || [];
-        let notes2 = JSON.parse(localStorage.getItem('c_pro_v6_n2')) || [];
+        let transactions = JSON.parse(localStorage.getItem('c_v8_trans')) || [];
+        let tabs = JSON.parse(localStorage.getItem('c_v8_tabs')) || []; // Menyimpan nama tab
+        let dynamicData = JSON.parse(localStorage.getItem('c_v8_dyn_data')) || {}; // Menyimpan konten tiap tab
         let myChart = null;
 
         function showPage(p) {
             document.querySelectorAll('.page').forEach(el => el.classList.remove('page-active'));
             document.getElementById('page-'+p).classList.add('page-active');
-            ['home', 'add', 'recap', 'notes', 'notes2'].forEach(nav => {
-                const el = document.getElementById('nav-'+nav);
-                el.className = (nav === p) ? "flex flex-col items-center text-indigo-600 scale-110" : "flex flex-col items-center text-slate-400";
-            });
-            if(p === 'home') render();
-            if(p === 'recap') generateMonthlyRecap();
-            if(p === 'notes') renderNotes(1);
-            if(p === 'notes2') renderNotes(2);
+            
+            // Reset semua warna nav
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.replace('text-indigo-600', 'text-slate-400'));
+            const activeNav = document.getElementById('nav-'+p);
+            if(activeNav) activeNav.classList.replace('text-slate-400', 'text-indigo-600');
+
+            if(p === 'home') renderHome();
+            if(p === 'recap') renderRecap();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function save(type) {
+        // --- MANAJEMEN TAB ---
+        function addNewTab() {
+            const name = document.getElementById('new-tab-name').value;
+            if(!name) return alert("Masukkan nama tab!");
+            const id = 'tab_' + Date.now();
+            tabs.push({ id, name });
+            dynamicData[id] = [];
+            localStorage.setItem('c_v8_tabs', JSON.stringify(tabs));
+            localStorage.setItem('c_v8_dyn_data', JSON.stringify(dynamicData));
+            document.getElementById('new-tab-name').value = '';
+            initDynamicTabs();
+            alert("Tab '" + name + "' berhasil dibuat!");
+        }
+
+        function initDynamicTabs() {
+            const navCont = document.getElementById('dynamic-navs');
+            const pageCont = document.getElementById('dynamic-pages');
+            navCont.innerHTML = '';
+            pageCont.innerHTML = '';
+
+            tabs.forEach(tab => {
+                // Tambah Navigasi
+                navCont.innerHTML += `
+                    <button onclick="showPage('${tab.id}')" id="nav-${tab.id}" class="tab-btn text-slate-400">
+                        <span class="text-3xl">📂</span><span class="nav-label uppercase">${tab.name}</span>
+                    </button>`;
+                
+                // Tambah Halaman
+                pageCont.innerHTML += `
+                    <div id="page-${tab.id}" class="page">
+                        <div class="card-neo">
+                            <h2 class="text-3xl font-black mb-4 uppercase text-indigo-600">${tab.name}</h2>
+                            <textarea id="input-${tab.id}" class="w-full h-40 p-4 bg-slate-50 rounded-3xl outline-none mb-4" placeholder="Tulis catatan di sini..."></textarea>
+                            <button onclick="saveToTab('${tab.id}')" class="w-full p-4 bg-indigo-600 text-white rounded-2xl font-bold">SIMPAN</button>
+                        </div>
+                        <div id="list-${tab.id}" class="space-y-4"></div>
+                    </div>`;
+                renderTabList(tab.id);
+            });
+        }
+
+        function saveToTab(tabId) {
+            const text = document.getElementById('input-'+tabId).value;
+            if(!text) return;
+            dynamicData[tabId].unshift({ text, date: new Date().toLocaleDateString() });
+            localStorage.setItem('c_v8_dyn_data', JSON.stringify(dynamicData));
+            document.getElementById('input-'+tabId).value = '';
+            renderTabList(tabId);
+        }
+
+        function renderTabList(tabId) {
+            const list = document.getElementById('list-'+tabId);
+            if(!list) return;
+            list.innerHTML = '';
+            dynamicData[tabId].forEach(item => {
+                list.innerHTML += `<div class="card-neo" style="border-left: 10px solid #6366f1"><p class="font-bold text-slate-700">${item.text}</p><small class="text-slate-400">${item.date}</small></div>`;
+            });
+        }
+
+        // --- TRANSAKSI UTAMA ---
+        function saveTransaction(type) {
             const val = parseInt(document.getElementById('amount').value);
             const desc = document.getElementById('desc').value;
             const date = document.getElementById('date-input').value;
             if(!val || !desc || !date) return alert("Lengkapi data!");
-            data.push({val, desc, date, type});
-            localStorage.setItem('c_pro_v6_data', JSON.stringify(data));
+            transactions.push({val, desc, date, type});
+            localStorage.setItem('c_v8_trans', JSON.stringify(transactions));
             document.getElementById('amount').value = '';
             document.getElementById('desc').value = '';
             showPage('home');
         }
 
-        function generateMonthlyRecap() {
-            const container = document.getElementById('recap-container');
-            container.innerHTML = '';
-            const monthlyData = {};
-            data.forEach(item => {
-                const monthName = new Date(item.date).toLocaleString('id-ID', { month: 'long', year: 'numeric' });
-                if(!monthlyData[monthName]) monthlyData[monthName] = { in: 0, out: 0 };
-                if(item.type === 'income') monthlyData[monthName].in += item.val;
-                else monthlyData[monthName].out += item.val;
-            });
-            Object.keys(monthlyData).reverse().forEach(month => {
-                const { in: tIn, out: tOut } = monthlyData[month];
-                const inPercent = (tIn / (tIn + tOut)) * 100 || 0;
-                container.innerHTML += `<div class="card-neo"><h3 class="text-2xl font-black mb-4 uppercase">${month}</h3><div class="flex justify-between font-bold text-lg mb-2"><span class="text-emerald-500">Masuk: ${tIn.toLocaleString()}</span><span class="text-rose-500">Keluar: ${tOut.toLocaleString()}</span></div><div class="recap-bar"><div class="recap-fill bg-emerald-500" style="width: ${inPercent}%"></div></div></div>`;
-            });
-        }
-
-        function saveNote(group) {
-            const inputId = group === 1 ? 'note-input' : 'note-input-2';
-            const text = document.getElementById(inputId).value;
-            if(!text) return;
-            const newNote = { text, time: new Date().toLocaleDateString() };
-            if(group === 1) {
-                notes1.unshift(newNote);
-                localStorage.setItem('c_pro_v6_n1', JSON.stringify(notes1));
-            } else {
-                notes2.unshift(newNote);
-                localStorage.setItem('c_pro_v6_n2', JSON.stringify(notes2));
-            }
-            document.getElementById(inputId).value = '';
-            renderNotes(group);
-        }
-
-        function renderNotes(group) {
-            const nl = document.getElementById('note-list-' + group);
-            const source = group === 1 ? notes1 : notes2;
-            const color = group === 1 ? '#6366f1' : '#10b981';
-            nl.innerHTML = '';
-            source.forEach(n => { nl.innerHTML += `<div class="card-neo" style="border-left: 10px solid ${color}"><p class="text-xl font-bold text-slate-700">${n.text}</p></div>`; });
-        }
-
-        function render() {
+        function renderHome() {
             const list = document.getElementById('list');
             let tin = 0, tout = 0;
             list.innerHTML = '';
-            data.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(item => {
+            transactions.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(item => {
                 if(item.type === 'income') tin += item.val; else tout += item.val;
-                list.innerHTML += `<div class="card-neo flex items-center gap-6 p-8 mb-4"><div class="text-3xl">${item.type==='income'?'💰':'💸'}</div><div class="flex-1"><p class="text-sm font-bold text-slate-400">${item.date}</p><p class="text-2xl font-black">${item.desc}</p></div><p class="text-2xl font-black ${item.type==='income'?'text-emerald-500':'text-rose-500'}">${item.val.toLocaleString()}</p></div>`;
+                list.innerHTML += `<div class="card-neo flex items-center justify-between p-6"><div><p class="text-sm font-bold text-slate-400">${item.date}</p><p class="text-xl font-black">${item.desc}</p></div><p class="text-xl font-black ${item.type==='income'?'text-emerald-500':'text-rose-500'}">${item.val.toLocaleString()}</p></div>`;
             });
             document.getElementById('total-balance').innerText = `Rp ${(tin-tout).toLocaleString()}`;
+            renderChart(tin, tout);
+        }
+
+        function renderChart(tin, tout) {
             const ctx = document.getElementById('myChart').getContext('2d');
             if(myChart) myChart.destroy();
             myChart = new Chart(ctx, { type: 'doughnut', data: { datasets: [{ data: [tin||1, tout||0], backgroundColor: ['#10b981', '#f43f5e'], borderWidth: 0 }]}, options: { cutout: '80%', plugins: { legend: { display: false } }, maintainAspectRatio: false } });
         }
 
+        function renderRecap() {
+            const container = document.getElementById('recap-container');
+            container.innerHTML = '';
+            const monthly = {};
+            transactions.forEach(i => {
+                const m = new Date(i.date).toLocaleString('id-ID', { month: 'long', year: 'numeric' });
+                if(!monthly[m]) monthly[m] = { in: 0, out: 0 };
+                if(i.type === 'income') monthly[m].in += i.val; else monthly[m].out += i.val;
+            });
+            Object.keys(monthly).reverse().forEach(m => {
+                const perc = (monthly[m].in / (monthly[m].in + monthly[m].out)) * 100 || 0;
+                container.innerHTML += `<div class="card-neo"><h3 class="font-black mb-2">${m}</h3><div class="flex justify-between text-sm mb-2"><span class="text-emerald-500">In: ${monthly[m].in.toLocaleString()}</span><span class="text-rose-500">Out: ${monthly[m].out.toLocaleString()}</span></div><div class="h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-emerald-500" style="width: ${perc}%"></div></div></div>`;
+            });
+        }
+
+        // Initialize
         document.getElementById('date-input').valueAsDate = new Date();
-        render();
+        initDynamicTabs();
+        renderHome();
     </script>
 </body>
 </html>
-
