@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Catatanku - Classic Edition</title>
+    <title>Catatanku - Classic Pro</title>
     <meta name="theme-color" content="#6366f1">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -19,7 +19,7 @@
 
         .glass-header {
             background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
-            padding: 100px 40px 120px 40px;
+            padding: 80px 40px 100px 40px;
             border-bottom-left-radius: 100px;
             border-bottom-right-radius: 100px;
             box-shadow: 0 20px 50px rgba(99, 102, 241, 0.3);
@@ -45,18 +45,30 @@
         .page-active { display: block; opacity: 1; transform: translateY(0); }
 
         .input-group { background: #f8fafc; padding: 30px; border-radius: 40px; margin-bottom: 20px; }
-        .input-label { font-size: 1.2rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 5px; display: block; }
         
-        input { height: 70px !important; font-size: 2rem !important; font-weight: 700 !important; border: none !important; width: 100%; background: transparent !important; outline: none !important; }
+        input { height: 70px !important; font-size: 1.8rem !important; font-weight: 700 !important; border: none !important; width: 100%; background: transparent !important; outline: none !important; }
 
         .btn-save { height: 100px; border-radius: 30px; width: 100%; font-weight: 800; font-size: 1.5rem; color: white; background: #1e293b; margin-top: 20px; }
-        .btn-save:active { transform: scale(0.96); }
-
-        .nav-icon-box { transform: scale(1.4); margin-bottom: 8px; }
-        .nav-label { font-size: 1rem; font-weight: 800; }
         
-        .recap-bar { height: 20px; border-radius: 10px; background: #e2e8f0; overflow: hidden; margin: 20px 0; }
-        .recap-fill { height: 100%; transition: width 1s ease-in-out; }
+        .nav-label { font-size: 1rem; font-weight: 800; margin-top: 5px; }
+
+        /* Filter Style */
+        .filter-box {
+            background: #f1f5f9;
+            border-radius: 30px;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .filter-input {
+            background: white !important;
+            border-radius: 20px !important;
+            height: 60px !important;
+            font-size: 1.2rem !important;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -70,16 +82,25 @@
     <main class="max-w-4xl mx-auto px-8 pt-12">
         
         <div id="page-home" class="page page-active">
-            <div class="card-neo"><div class="h-[400px]"><canvas id="myChart"></canvas></div></div>
+            <div class="card-neo">
+                <div class="h-[350px] mb-8"><canvas id="myChart"></canvas></div>
+                
+                <div class="filter-box">
+                    <input type="date" id="f-start" onchange="render()" class="filter-input">
+                    <input type="date" id="f-end" onchange="render()" class="filter-input">
+                </div>
+                <button onclick="resetFilter()" class="w-full text-slate-400 font-bold uppercase tracking-widest text-sm">Hapus Filter</button>
+            </div>
+            
             <div id="list" class="space-y-6"></div>
         </div>
 
         <div id="page-add" class="page">
             <div class="card-neo">
                 <h2 class="text-4xl font-black mb-8 text-center text-indigo-600">INPUT DATA</h2>
-                <div class="input-group"><label class="input-label">Tanggal</label><input id="date-input" type="date"></div>
-                <div class="input-group"><label class="input-label">Keterangan</label><input id="desc" type="text" placeholder="Keperluan..."></div>
-                <div class="input-group" style="border-left: 10px solid #6366f1;"><label class="input-label">Nominal</label><input id="amount" type="number" placeholder="0"></div>
+                <div class="input-group"><input id="date-input" type="date"></div>
+                <div class="input-group"><input id="desc" type="text" placeholder="Keperluan..."></div>
+                <div class="input-group" style="border-left: 10px solid #6366f1;"><input id="amount" type="number" placeholder="Nominal Rp"></div>
                 <div class="grid grid-cols-2 gap-4 mt-8">
                     <button onclick="save('income')" class="h-24 bg-emerald-500 rounded-3xl text-white font-bold text-xl">📥 MASUK</button>
                     <button onclick="save('expense')" class="h-24 bg-rose-500 rounded-3xl text-white font-bold text-xl">📤 KELUAR</button>
@@ -94,7 +115,6 @@
 
         <div id="page-notes" class="page">
             <div class="card-neo">
-                <h2 class="text-3xl font-black mb-6 uppercase text-slate-500 tracking-widest text-center">Catatan</h2>
                 <textarea id="note-input" class="w-full text-2xl p-6 rounded-[30px] border-2 border-slate-100 bg-slate-50 outline-none" style="height: 400px;" placeholder="Tulis sesuatu..."></textarea>
                 <button onclick="saveNote()" class="btn-save">SIMPAN CATATAN</button>
             </div>
@@ -104,16 +124,16 @@
 
     <nav class="fixed bottom-0 left-0 right-0 nav-blur flex justify-around items-center z-50 rounded-t-[60px] px-2">
         <button onclick="showPage('home')" id="nav-home" class="flex flex-col items-center text-indigo-600">
-            <div class="nav-icon-box">🏠</div><span class="nav-label">HOME</span>
+            <span class="text-4xl">🏠</span><span class="nav-label">HOME</span>
         </button>
         <button onclick="showPage('add')" id="nav-add" class="flex flex-col items-center text-slate-400">
-            <div class="nav-icon-box">➕</div><span class="nav-label">TAMBAH</span>
+            <span class="text-4xl">➕</span><span class="nav-label">TAMBAH</span>
         </button>
         <button onclick="showPage('recap')" id="nav-recap" class="flex flex-col items-center text-slate-400">
-            <div class="nav-icon-box">📊</div><span class="nav-label">REKAP</span>
+            <span class="text-4xl">📊</span><span class="nav-label">REKAP</span>
         </button>
         <button onclick="showPage('notes')" id="nav-notes" class="flex flex-col items-center text-slate-400">
-            <div class="nav-icon-box">📝</div><span class="nav-label">NOTE</span>
+            <span class="text-4xl">📝</span><span class="nav-label">NOTE</span>
         </button>
     </nav>
 
@@ -127,12 +147,18 @@
             document.getElementById('page-'+p).classList.add('page-active');
             ['home', 'add', 'recap', 'notes'].forEach(nav => {
                 const el = document.getElementById('nav-'+nav);
-                el.className = (nav === p) ? "flex flex-col items-center text-indigo-600 scale-110" : "flex flex-col items-center text-slate-400";
+                el.className = (nav === p) ? "flex flex-col items-center text-indigo-600 scale-110 transition-all" : "flex flex-col items-center text-slate-400";
             });
             if(p === 'home') render();
             if(p === 'recap') generateMonthlyRecap();
             if(p === 'notes') renderNotes();
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetFilter() {
+            document.getElementById('f-start').value = '';
+            document.getElementById('f-end').value = '';
+            render();
         }
 
         function save(type) {
@@ -145,6 +171,36 @@
             document.getElementById('amount').value = '';
             document.getElementById('desc').value = '';
             showPage('home');
+        }
+
+        function render() {
+            const list = document.getElementById('list');
+            const fStart = document.getElementById('f-start').value;
+            const fEnd = document.getElementById('f-end').value;
+            let tin = 0, tout = 0;
+            list.innerHTML = '';
+            
+            data.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(item => {
+                if((!fStart || item.date >= fStart) && (!fEnd || item.date <= fEnd)) {
+                    if(item.type === 'income') tin += item.val; else tout += item.val;
+                    list.innerHTML += `<div class="card-neo flex items-center gap-6 p-8 mb-4">
+                        <div class="text-3xl">${item.type==='income'?'💰':'💸'}</div>
+                        <div class="flex-1">
+                            <p class="text-sm font-bold text-slate-400">${item.date}</p>
+                            <p class="text-2xl font-black">${item.desc}</p>
+                        </div>
+                        <p class="text-2xl font-black ${item.type==='income'?'text-emerald-500':'text-rose-500'}">${item.val.toLocaleString()}</p>
+                    </div>`;
+                }
+            });
+            document.getElementById('total-balance').innerText = `Rp ${(tin-tout).toLocaleString()}`;
+            updateChart(tin, tout);
+        }
+
+        function updateChart(tin, tout) {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            if(myChart) myChart.destroy();
+            myChart = new Chart(ctx, { type: 'doughnut', data: { datasets: [{ data: [tin||1, tout||0], backgroundColor: ['#10b981', '#f43f5e'], borderWidth: 0 }]}, options: { cutout: '80%', plugins: { legend: { display: false } }, maintainAspectRatio: false } });
         }
 
         function generateMonthlyRecap() {
@@ -160,7 +216,7 @@
             Object.keys(monthlyData).reverse().forEach(month => {
                 const { in: tIn, out: tOut } = monthlyData[month];
                 const inPercent = (tIn / (tIn + tOut)) * 100 || 0;
-                container.innerHTML += `<div class="card-neo"><h3 class="text-2xl font-black mb-4 uppercase">${month}</h3><div class="flex justify-between font-bold text-lg mb-2"><span class="text-emerald-500">Masuk: ${tIn.toLocaleString()}</span><span class="text-rose-500">Keluar: ${tOut.toLocaleString()}</span></div><div class="recap-bar"><div class="recap-fill bg-emerald-500" style="width: ${inPercent}%"></div></div></div>`;
+                container.innerHTML += `<div class="card-neo"><h3 class="text-2xl font-black mb-4 uppercase">${month}</h3><div class="flex justify-between font-bold text-lg mb-2"><span class="text-emerald-500">In: ${tIn.toLocaleString()}</span><span class="text-rose-500">Out: ${tOut.toLocaleString()}</span></div><div class="recap-bar"><div class="recap-fill bg-emerald-500" style="width: ${inPercent}%"></div></div></div>`;
             });
         }
 
@@ -179,22 +235,9 @@
             notes.forEach(n => { nl.innerHTML += `<div class="card-neo" style="border-left: 10px solid #6366f1"><p class="text-xl font-bold text-slate-700">${n.text}</p></div>`; });
         }
 
-        function render() {
-            const list = document.getElementById('list');
-            let tin = 0, tout = 0;
-            list.innerHTML = '';
-            data.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(item => {
-                if(item.type === 'income') tin += item.val; else tout += item.val;
-                list.innerHTML += `<div class="card-neo flex items-center gap-6 p-8 mb-4"><div class="text-3xl">${item.type==='income'?'💰':'💸'}</div><div class="flex-1"><p class="text-sm font-bold text-slate-400">${item.date}</p><p class="text-2xl font-black">${item.desc}</p></div><p class="text-2xl font-black ${item.type==='income'?'text-emerald-500':'text-rose-500'}">${item.val.toLocaleString()}</p></div>`;
-            });
-            document.getElementById('total-balance').innerText = `Rp ${(tin-tout).toLocaleString()}`;
-            const ctx = document.getElementById('myChart').getContext('2d');
-            if(myChart) myChart.destroy();
-            myChart = new Chart(ctx, { type: 'doughnut', data: { datasets: [{ data: [tin||1, tout||0], backgroundColor: ['#10b981', '#f43f5e'], borderWidth: 0 }]}, options: { cutout: '80%', plugins: { legend: { display: false } }, maintainAspectRatio: false } });
-        }
-
         document.getElementById('date-input').valueAsDate = new Date();
         render();
     </script>
 </body>
 </html>
+
