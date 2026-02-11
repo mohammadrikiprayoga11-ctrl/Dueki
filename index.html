@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Dompetku Pro v10.4 - 5X Giant Edition</title>
+    <title>Dompetku Pro v10.4 - Giant 5X Fixed</title>
     <meta name="theme-color" content="#4f46e5">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -13,12 +13,10 @@
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif;
             -webkit-tap-highlight-color: transparent; 
-            /* Ruang bawah ekstra besar agar konten tidak tertutup navigasi raksasa */
             padding-bottom: 450px; 
             background-color: #F8FAFC;
         }
 
-        /* HEADER 5X LEBIH TINGGI */
         .glass-header {
             background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
             padding-top: 80px;
@@ -27,29 +25,28 @@
             border-bottom-right-radius: 80px;
         }
 
-        /* NAVIGASI BAWAH RAKSASA */
         .nav-blur {
             background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(20px);
-            height: 300px; /* Dari 60px ke 300px (5x) */
+            height: 300px;
             border-top: 4px solid #e2e8f0;
         }
 
         .card-neo {
             background: #ffffff;
-            border: 3px solid #e2e8f0;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border: 4px solid #e2e8f0;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
             border-radius: 60px;
-            padding: 40px;
+            padding: 50px;
             margin-bottom: 40px;
         }
 
         .page { display: none; opacity: 0; transform: translateY(20px); transition: all 0.3s ease; }
         .page-active { display: block; opacity: 1; transform: translateY(0); }
 
-        /* TOMBOL 5X LIPAT */
+        /* UKURAN RAKSASA 5X */
         .btn-giant {
-            height: 180px; /* Tinggi tombol raksasa */
+            height: 180px;
             border-radius: 50px;
             font-weight: 800;
             font-size: 2.5rem; 
@@ -57,90 +54,97 @@
             align-items: center;
             justify-content: center;
             width: 100%;
-            transition: transform 0.1s active;
+            margin-bottom: 30px;
         }
-        .btn-giant:active { transform: scale(0.95); }
 
-        /* INPUT & FORM RAKSASA */
-        input, select, textarea { 
+        input, select { 
             height: 130px !important;
             font-size: 2.2rem !important;
             border-radius: 40px !important;
-            border: 4px solid #cbd5e1 !important;
+            border: 5px solid #cbd5e1 !important;
             padding: 0 40px !important;
             margin-bottom: 30px;
             width: 100%;
+            background-color: #f1f5f9;
         }
 
         label {
-            font-size: 1.5rem !important;
-            font-weight: 800;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #475569;
+            display: block;
+            margin-bottom: 15px;
             margin-left: 20px;
-            color: #64748b;
             text-transform: uppercase;
         }
 
-        /* Ikon Navigasi */
         .nav-icon-box { transform: scale(2.5); margin-bottom: 30px; }
         .nav-label { font-size: 1.8rem; font-weight: 900; }
-
-        .custom-scroll::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="text-slate-900">
 
     <header class="glass-header px-10 text-white sticky top-0 z-40">
-        <div class="text-center space-y-6">
-            <h1 class="text-3xl font-black opacity-60 uppercase tracking-widest">Dompetku Pro</h1>
-            <p class="text-2xl font-bold uppercase opacity-80">Total Saldo</p>
+        <div class="text-center">
+            <h1 class="text-3xl font-black opacity-50 uppercase tracking-[0.2em] mb-4">Dompetku Pro</h1>
+            <p class="text-2xl font-bold uppercase opacity-80 mb-2">Total Saldo</p>
             <h1 id="total-balance" class="text-7xl font-black tracking-tighter">Rp 0</h1>
         </div>
     </header>
 
     <main class="max-w-4xl mx-auto px-8 pt-12">
+        
         <div id="page-home" class="page page-active">
-            <div class="card-neo">
-                <div class="h-[500px]">
-                    <canvas id="myChart"></canvas>
+            <div class="card-neo bg-indigo-50/50">
+                <h2 class="text-4xl font-black text-indigo-600 mb-8 uppercase text-center">Filter Tanggal</h2>
+                <div class="space-y-6">
+                    <div>
+                        <label>Mulai Dari:</label>
+                        <input id="f-start" onchange="render()" type="date">
+                    </div>
+                    <div>
+                        <label>Sampai Dengan:</label>
+                        <input id="f-end" onchange="render()" type="date">
+                    </div>
+                    <button onclick="resetFilter()" class="h-24 w-full bg-slate-200 rounded-[30px] text-2xl font-black text-slate-600">RESET FILTER</button>
                 </div>
             </div>
-            <h3 class="text-4xl font-black mb-8 px-4 text-slate-800">Riwayat</h3>
+
+            <div class="card-neo">
+                <div class="h-[500px]"><canvas id="myChart"></canvas></div>
+            </div>
+
+            <h3 class="text-5xl font-black mb-10 text-slate-800 uppercase px-4">Riwayat</h3>
             <div id="list" class="space-y-8"></div>
         </div>
 
         <div id="page-add" class="page">
-            <div class="card-neo space-y-8">
-                <h2 class="text-5xl font-black text-center mb-10 text-indigo-600">TAMBAH DATA</h2>
+            <div class="card-neo">
+                <h2 class="text-6xl font-black text-center mb-12 text-indigo-600">INPUT DATA</h2>
                 
-                <div>
-                    <label>Tanggal</label>
-                    <input id="date-input" type="date">
-                </div>
+                <label>Pilih Tanggal</label>
+                <input id="date-input" type="date">
 
-                <div>
-                    <label>Keterangan</label>
-                    <input id="desc" type="text" placeholder="Beli apa?">
-                </div>
+                <label>Keterangan</label>
+                <input id="desc" type="text" placeholder="Beli apa?">
 
-                <div>
-                    <label>Nominal (Rp)</label>
-                    <input id="amount" type="number" placeholder="0" class="text-indigo-600 font-black">
-                </div>
+                <label>Nominal (Rp)</label>
+                <input id="amount" type="number" placeholder="0" class="text-indigo-600 font-black">
 
-                <div class="space-y-6 pt-6">
-                    <button onclick="save('income')" class="btn-giant bg-emerald-500 text-white shadow-xl shadow-emerald-100">SIMPAN MASUK</button>
-                    <button onclick="save('expense')" class="btn-giant bg-rose-500 text-white shadow-xl shadow-rose-100">SIMPAN KELUAR</button>
+                <div class="pt-8">
+                    <button onclick="save('income')" class="btn-giant bg-emerald-500 text-white shadow-2xl">SIMPAN MASUK (+)</button>
+                    <button onclick="save('expense')" class="btn-giant bg-rose-500 text-white shadow-2xl">SIMPAN KELUAR (-)</button>
                 </div>
             </div>
         </div>
 
         <div id="page-notes" class="page">
             <div class="card-neo">
-                <h2 class="text-5xl font-black text-center mb-10 text-slate-800">CATATAN</h2>
-                <textarea id="note-input" style="height: 300px !important;" placeholder="Tulis rencana..."></textarea>
-                <button onclick="saveNote()" class="btn-giant bg-slate-900 text-white mt-6">SIMPAN CATATAN</button>
+                <h2 class="text-6xl font-black text-center mb-12">CATATAN</h2>
+                <textarea id="note-input" class="w-full text-3xl p-8 rounded-[40px] border-4 border-slate-200 mb-8" style="height: 400px;" placeholder="Tulis rencana belanja..."></textarea>
+                <button onclick="saveNote()" class="btn-giant bg-slate-900 text-white">SIMPAN CATATAN</button>
             </div>
-            <div id="note-list" class="space-y-8 mt-12"></div>
+            <div id="note-list" class="mt-12 space-y-8"></div>
         </div>
     </main>
 
@@ -160,8 +164,8 @@
     </nav>
 
     <script>
-        let data = JSON.parse(localStorage.getItem('dompet_5x_data')) || [];
-        let notes = JSON.parse(localStorage.getItem('dompet_5x_notes')) || [];
+        let data = JSON.parse(localStorage.getItem('dompet_giant_v2')) || [];
+        let notes = JSON.parse(localStorage.getItem('notes_giant_v2')) || [];
         let myChart = null;
 
         function showPage(p) {
@@ -169,29 +173,40 @@
             document.getElementById('page-'+p).classList.add('page-active');
             ['home', 'add', 'notes'].forEach(nav => {
                 const el = document.getElementById('nav-'+nav);
-                el.className = (nav === p) ? "flex flex-col items-center text-indigo-600 scale-110 transition-all" : "flex flex-col items-center text-slate-400";
+                el.className = (nav === p) ? "flex flex-col items-center text-indigo-600 scale-110" : "flex flex-col items-center text-slate-400";
             });
             if(p === 'home') render();
             if(p === 'notes') renderNotes();
             window.scrollTo(0,0);
         }
 
+        function resetFilter() {
+            document.getElementById('f-start').value = '';
+            document.getElementById('f-end').value = '';
+            render();
+        }
+
         function render() {
             const list = document.getElementById('list');
+            const fStart = document.getElementById('f-start').value;
+            const fEnd = document.getElementById('f-end').value;
             let tin = 0, tout = 0;
             list.innerHTML = '';
+
             data.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(item => {
-                if(item.type === 'income') tin += item.val; else tout += item.val;
-                list.innerHTML += `
-                    <div class="card-neo flex justify-between items-center bg-white">
-                        <div class="space-y-2">
-                            <p class="text-2xl text-slate-400 font-bold">${item.date}</p>
-                            <p class="text-4xl font-black text-slate-800">${item.desc}</p>
-                        </div>
-                        <p class="text-4xl font-black ${item.type==='income'?'text-emerald-500':'text-rose-500'}">
-                            ${item.type==='income'?'+':'-'}${item.val.toLocaleString()}
-                        </p>
-                    </div>`;
+                if((!fStart || item.date >= fStart) && (!fEnd || item.date <= fEnd)) {
+                    if(item.type === 'income') tin += item.val; else tout += item.val;
+                    list.innerHTML += `
+                        <div class="card-neo flex justify-between items-center">
+                            <div>
+                                <p class="text-2xl text-slate-400 font-bold uppercase">${item.date}</p>
+                                <p class="text-4xl font-black text-slate-800">${item.desc}</p>
+                            </div>
+                            <p class="text-4xl font-black ${item.type==='income'?'text-emerald-500':'text-rose-500'}">
+                                ${item.type==='income'?'+':'-'}${item.val.toLocaleString()}
+                            </p>
+                        </div>`;
+                }
             });
             document.getElementById('total-balance').innerText = `Rp ${(tin-tout).toLocaleString()}`;
             updateChart(tin, tout);
@@ -211,9 +226,9 @@
             const val = parseInt(document.getElementById('amount').value);
             const desc = document.getElementById('desc').value;
             const date = document.getElementById('date-input').value;
-            if(!val || !desc || !date) return alert("Lengkapi data!");
+            if(!val || !desc || !date) return alert("ISI SEMUA DATA!");
             data.push({val, desc, date, type});
-            localStorage.setItem('dompet_5x_data', JSON.stringify(data));
+            localStorage.setItem('dompet_giant_v2', JSON.stringify(data));
             document.getElementById('amount').value = '';
             document.getElementById('desc').value = '';
             showPage('home');
@@ -223,7 +238,7 @@
             const text = document.getElementById('note-input').value;
             if(!text) return;
             notes.unshift({ text, time: new Date().toLocaleDateString() });
-            localStorage.setItem('dompet_5x_notes', JSON.stringify(notes));
+            localStorage.setItem('notes_giant_v2', JSON.stringify(notes));
             document.getElementById('note-input').value = '';
             renderNotes();
         }
@@ -232,7 +247,7 @@
             const nl = document.getElementById('note-list');
             nl.innerHTML = '';
             notes.forEach(n => {
-                nl.innerHTML += `<div class="card-neo"><p class="text-3xl font-bold text-slate-700">${n.text}</p></div>`;
+                nl.innerHTML += `<div class="card-neo"><p class="text-3xl font-bold">${n.text}</p></div>`;
             });
         }
 
