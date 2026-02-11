@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Catatanku Pro - 5 Tabs</title>
+    <title>Catatanku - Dual Notes</title>
     <meta name="theme-color" content="#6366f1">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -49,16 +49,12 @@
         
         input { height: 70px !important; font-size: 2rem !important; font-weight: 700 !important; border: none !important; width: 100%; background: transparent !important; outline: none !important; }
 
-        .btn-action-sm {
-            height: 110px; border-radius: 35px; font-weight: 800; font-size: 1.5rem;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: white; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
+        .btn-save { height: 100px; border-radius: 30px; width: 100%; font-weight: 800; font-size: 1.5rem; color: white; background: #1e293b; margin-top: 20px; }
+        .btn-save:active { transform: scale(0.96); }
 
         .nav-icon-box { transform: scale(1.4); margin-bottom: 8px; }
-        .nav-label { font-size: 1rem; font-weight: 800; }
+        .nav-label { font-size: 0.9rem; font-weight: 800; }
         
-        /* Recap Styling */
         .recap-bar { height: 20px; border-radius: 10px; background: #e2e8f0; overflow: hidden; margin: 20px 0; }
         .recap-fill { height: 100%; transition: width 1s ease-in-out; }
     </style>
@@ -74,64 +70,50 @@
     <main class="max-w-4xl mx-auto px-8 pt-12">
         
         <div id="page-home" class="page page-active">
-            <div class="card-neo">
-                <div class="grid grid-cols-2 gap-4">
-                    <input id="f-start" onchange="render()" type="date" class="!text-sm !h-12 bg-slate-50 rounded-xl p-2">
-                    <input id="f-end" onchange="render()" type="date" class="!text-sm !h-12 bg-slate-50 rounded-xl p-2">
-                </div>
-            </div>
             <div class="card-neo"><div class="h-[400px]"><canvas id="myChart"></canvas></div></div>
             <div id="list" class="space-y-6"></div>
         </div>
 
         <div id="page-add" class="page">
             <div class="card-neo">
-                <div class="input-group">
-                    <label class="input-label">Tanggal</label>
-                    <input id="date-input" type="date">
-                </div>
-                <div class="input-group">
-                    <label class="input-label">Keterangan</label>
-                    <input id="desc" type="text" placeholder="Beli apa?">
-                </div>
-                <div class="input-group" style="border-left: 10px solid #6366f1;">
-                    <label class="input-label">Nominal (Rp)</label>
-                    <input id="amount" type="number" placeholder="0">
-                </div>
+                <h2 class="text-4xl font-black mb-8 text-center text-indigo-600">TRANSAKSI UTAMA</h2>
+                <div class="input-group"><label class="input-label">Tanggal</label><input id="date-input" type="date"></div>
+                <div class="input-group"><label class="input-label">Keterangan</label><input id="desc" type="text" placeholder="Keperluan..."></div>
+                <div class="input-group" style="border-left: 10px solid #6366f1;"><label class="input-label">Nominal</label><input id="amount" type="number" placeholder="0"></div>
                 <div class="grid grid-cols-2 gap-4 mt-8">
-                    <button onclick="save('income')" class="btn-action-sm bg-emerald-500"><span>📥</span> MASUK</button>
-                    <button onclick="save('expense')" class="btn-action-sm bg-rose-500"><span>📤</span> KELUAR</button>
+                    <button onclick="save('income')" class="h-24 bg-emerald-500 rounded-3xl text-white font-bold text-xl">📥 MASUK</button>
+                    <button onclick="save('expense')" class="h-24 bg-rose-500 rounded-3xl text-white font-bold text-xl">📤 KELUAR</button>
                 </div>
             </div>
         </div>
 
         <div id="page-recap" class="page">
             <h2 class="text-4xl font-black mb-8 px-4">REKAP BULANAN</h2>
-            <div id="recap-container" class="space-y-8">
-                </div>
+            <div id="recap-container" class="space-y-8"></div>
         </div>
 
         <div id="page-notes" class="page">
             <div class="card-neo">
-                <textarea id="note-input" class="w-full text-2xl p-6 rounded-[30px] border-2 border-slate-100 bg-slate-50 mb-6 outline-none" style="height: 400px;" placeholder="Tulis catatan..."></textarea>
-                <button onclick="saveNote()" class="w-full h-20 bg-slate-900 text-white rounded-3xl font-bold text-xl">SIMPAN</button>
+                <h2 class="text-3xl font-black mb-6 uppercase text-slate-500 tracking-widest">Catatan Umum</h2>
+                <textarea id="note-input" class="w-full text-2xl p-6 rounded-[30px] border-2 border-slate-100 bg-slate-50 outline-none" style="height: 350px;" placeholder="Tulis catatan harian..."></textarea>
+                <button onclick="saveNote(1)" class="btn-save">SIMPAN KE GRUP 1</button>
             </div>
-            <div id="note-list" class="space-y-6"></div>
+            <div id="note-list-1" class="space-y-6"></div>
         </div>
 
-        <div id="page-profile" class="page">
-            <div class="card-neo text-center">
-                <div class="w-32 h-32 bg-indigo-100 rounded-full mx-auto mb-6 flex items-center justify-center text-5xl">👤</div>
-                <h2 class="text-3xl font-bold mb-2">Pengguna Catatanku</h2>
-                <p class="text-slate-500 mb-8 font-semibold">Versi 10.4 Premium</p>
-                <button onclick="localStorage.clear(); location.reload();" class="w-full h-20 border-4 border-rose-100 text-rose-500 rounded-3xl font-black">HAPUS SEMUA DATA</button>
+        <div id="page-notes2" class="page">
+            <div class="card-neo">
+                <h2 class="text-3xl font-black mb-6 uppercase text-indigo-500 tracking-widest">Catatan Khusus</h2>
+                <textarea id="note-input-2" class="w-full text-2xl p-6 rounded-[30px] border-2 border-indigo-50 bg-indigo-50 outline-none" style="height: 350px;" placeholder="Tulis catatan proyek/bisnis..."></textarea>
+                <button onclick="saveNote(2)" class="btn-save" style="background: #6366f1;">SIMPAN KE GRUP 2</button>
             </div>
+            <div id="note-list-2" class="space-y-6"></div>
         </div>
     </main>
 
     <nav class="fixed bottom-0 left-0 right-0 nav-blur flex justify-around items-center z-50 rounded-t-[60px] px-2">
         <button onclick="showPage('home')" id="nav-home" class="flex flex-col items-center text-indigo-600">
-            <div class="nav-icon-box">🏠</div><span class="nav-label">BERANDA</span>
+            <div class="nav-icon-box">🏠</div><span class="nav-label">HOME</span>
         </button>
         <button onclick="showPage('add')" id="nav-add" class="flex flex-col items-center text-slate-400">
             <div class="nav-icon-box">➕</div><span class="nav-label">TAMBAH</span>
@@ -140,28 +122,30 @@
             <div class="nav-icon-box">📊</div><span class="nav-label">REKAP</span>
         </button>
         <button onclick="showPage('notes')" id="nav-notes" class="flex flex-col items-center text-slate-400">
-            <div class="nav-icon-box">📝</div><span class="nav-label">NOTE</span>
+            <div class="nav-icon-box">📝</div><span class="nav-label">NOTE 1</span>
         </button>
-        <button onclick="showPage('profile')" id="nav-profile" class="flex flex-col items-center text-slate-400">
-            <div class="nav-icon-box">👤</div><span class="nav-label">PROFIL</span>
+        <button onclick="showPage('notes2')" id="nav-notes2" class="flex flex-col items-center text-slate-400">
+            <div class="nav-icon-box">📂</div><span class="nav-label">NOTE 2</span>
         </button>
     </nav>
 
     <script>
-        let data = JSON.parse(localStorage.getItem('c_pro_data')) || [];
-        let notes = JSON.parse(localStorage.getItem('c_pro_notes')) || [];
+        let data = JSON.parse(localStorage.getItem('c_pro_v6_data')) || [];
+        let notes1 = JSON.parse(localStorage.getItem('c_pro_v6_n1')) || [];
+        let notes2 = JSON.parse(localStorage.getItem('c_pro_v6_n2')) || [];
         let myChart = null;
 
         function showPage(p) {
             document.querySelectorAll('.page').forEach(el => el.classList.remove('page-active'));
             document.getElementById('page-'+p).classList.add('page-active');
-            ['home', 'add', 'recap', 'notes', 'profile'].forEach(nav => {
+            ['home', 'add', 'recap', 'notes', 'notes2'].forEach(nav => {
                 const el = document.getElementById('nav-'+nav);
                 el.className = (nav === p) ? "flex flex-col items-center text-indigo-600 scale-110" : "flex flex-col items-center text-slate-400";
             });
             if(p === 'home') render();
             if(p === 'recap') generateMonthlyRecap();
-            if(p === 'notes') renderNotes();
+            if(p === 'notes') renderNotes(1);
+            if(p === 'notes2') renderNotes(2);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -171,7 +155,7 @@
             const date = document.getElementById('date-input').value;
             if(!val || !desc || !date) return alert("Lengkapi data!");
             data.push({val, desc, date, type});
-            localStorage.setItem('c_pro_data', JSON.stringify(data));
+            localStorage.setItem('c_pro_v6_data', JSON.stringify(data));
             document.getElementById('amount').value = '';
             document.getElementById('desc').value = '';
             showPage('home');
@@ -180,7 +164,6 @@
         function generateMonthlyRecap() {
             const container = document.getElementById('recap-container');
             container.innerHTML = '';
-            
             const monthlyData = {};
             data.forEach(item => {
                 const monthName = new Date(item.date).toLocaleString('id-ID', { month: 'long', year: 'numeric' });
@@ -188,66 +171,49 @@
                 if(item.type === 'income') monthlyData[monthName].in += item.val;
                 else monthlyData[monthName].out += item.val;
             });
-
             Object.keys(monthlyData).reverse().forEach(month => {
                 const { in: tIn, out: tOut } = monthlyData[month];
-                const total = tIn + tOut;
-                const inPercent = (tIn / total) * 100 || 0;
-                
-                container.innerHTML += `
-                    <div class="card-neo">
-                        <h3 class="text-2xl font-black text-slate-800 uppercase mb-4">${month}</h3>
-                        <div class="flex justify-between text-xl font-bold mb-2">
-                            <span class="text-emerald-500">Masuk: Rp ${tIn.toLocaleString()}</span>
-                            <span class="text-rose-500">Keluar: Rp ${tOut.toLocaleString()}</span>
-                        </div>
-                        <div class="recap-bar">
-                            <div class="recap-fill bg-emerald-500" style="width: ${inPercent}%"></div>
-                        </div>
-                        <p class="text-center font-bold text-slate-400">Pemasukan vs Pengeluaran</p>
-                    </div>`;
+                const inPercent = (tIn / (tIn + tOut)) * 100 || 0;
+                container.innerHTML += `<div class="card-neo"><h3 class="text-2xl font-black mb-4 uppercase">${month}</h3><div class="flex justify-between font-bold text-lg mb-2"><span class="text-emerald-500">Masuk: ${tIn.toLocaleString()}</span><span class="text-rose-500">Keluar: ${tOut.toLocaleString()}</span></div><div class="recap-bar"><div class="recap-fill bg-emerald-500" style="width: ${inPercent}%"></div></div></div>`;
             });
+        }
+
+        function saveNote(group) {
+            const inputId = group === 1 ? 'note-input' : 'note-input-2';
+            const text = document.getElementById(inputId).value;
+            if(!text) return;
+            const newNote = { text, time: new Date().toLocaleDateString() };
+            if(group === 1) {
+                notes1.unshift(newNote);
+                localStorage.setItem('c_pro_v6_n1', JSON.stringify(notes1));
+            } else {
+                notes2.unshift(newNote);
+                localStorage.setItem('c_pro_v6_n2', JSON.stringify(notes2));
+            }
+            document.getElementById(inputId).value = '';
+            renderNotes(group);
+        }
+
+        function renderNotes(group) {
+            const nl = document.getElementById('note-list-' + group);
+            const source = group === 1 ? notes1 : notes2;
+            const color = group === 1 ? '#6366f1' : '#10b981';
+            nl.innerHTML = '';
+            source.forEach(n => { nl.innerHTML += `<div class="card-neo" style="border-left: 10px solid ${color}"><p class="text-xl font-bold text-slate-700">${n.text}</p></div>`; });
         }
 
         function render() {
             const list = document.getElementById('list');
-            const fStart = document.getElementById('f-start').value;
-            const fEnd = document.getElementById('f-end').value;
             let tin = 0, tout = 0;
             list.innerHTML = '';
             data.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(item => {
-                if((!fStart || item.date >= fStart) && (!fEnd || item.date <= fEnd)) {
-                    if(item.type === 'income') tin += item.val; else tout += item.val;
-                    list.innerHTML += `<div class="card-neo flex items-center gap-6 p-8 mb-4">
-                        <div class="text-3xl">${item.type==='income'?'💰':'💸'}</div>
-                        <div class="flex-1"><p class="text-sm font-bold text-slate-400">${item.date}</p><p class="text-2xl font-black">${item.desc}</p></div>
-                        <p class="text-2xl font-black ${item.type==='income'?'text-emerald-500':'text-rose-500'}">${item.val.toLocaleString()}</p>
-                    </div>`;
-                }
+                if(item.type === 'income') tin += item.val; else tout += item.val;
+                list.innerHTML += `<div class="card-neo flex items-center gap-6 p-8 mb-4"><div class="text-3xl">${item.type==='income'?'💰':'💸'}</div><div class="flex-1"><p class="text-sm font-bold text-slate-400">${item.date}</p><p class="text-2xl font-black">${item.desc}</p></div><p class="text-2xl font-black ${item.type==='income'?'text-emerald-500':'text-rose-500'}">${item.val.toLocaleString()}</p></div>`;
             });
             document.getElementById('total-balance').innerText = `Rp ${(tin-tout).toLocaleString()}`;
-            updateChart(tin, tout);
-        }
-
-        function updateChart(tin, tout) {
             const ctx = document.getElementById('myChart').getContext('2d');
             if(myChart) myChart.destroy();
             myChart = new Chart(ctx, { type: 'doughnut', data: { datasets: [{ data: [tin||1, tout||0], backgroundColor: ['#10b981', '#f43f5e'], borderWidth: 0 }]}, options: { cutout: '80%', plugins: { legend: { display: false } }, maintainAspectRatio: false } });
-        }
-
-        function saveNote() {
-            const text = document.getElementById('note-input').value;
-            if(!text) return;
-            notes.unshift({ text, time: new Date().toLocaleDateString() });
-            localStorage.setItem('c_pro_notes', JSON.stringify(notes));
-            document.getElementById('note-input').value = '';
-            renderNotes();
-        }
-
-        function renderNotes() {
-            const nl = document.getElementById('note-list');
-            nl.innerHTML = '';
-            notes.forEach(n => { nl.innerHTML += `<div class="card-neo" style="border-left: 10px solid #6366f1"><p class="text-xl font-bold">${n.text}</p></div>`; });
         }
 
         document.getElementById('date-input').valueAsDate = new Date();
