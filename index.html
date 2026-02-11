@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Dompetku Pro v10.4 - Clean Filter</title>
+    <title>Dompetku Pro v10.4 - Premium Input</title>
     <meta name="theme-color" content="#6366f1">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -46,58 +46,59 @@
         .page { display: none; opacity: 0; transform: translateY(30px); transition: all 0.5s ease; }
         .page-active { display: block; opacity: 1; transform: translateY(0); }
 
-        /* Filter Row Layout */
-        .filter-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
+        /* INPUT STYLING UPDATED */
+        .input-group {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 45px;
             margin-bottom: 30px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .input-group:focus-within {
+            background: #ffffff;
+            border-color: #6366f1;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.1);
         }
 
-        .filter-label {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #64748b;
-            margin-bottom: 15px;
-            display: block;
-            text-align: center;
-        }
-
-        /* Input Styling */
-        input, select { 
-            height: 110px !important;
-            font-size: 1.8rem !important;
-            border-radius: 35px !important;
-            border: 3px solid #f1f5f9 !important;
-            padding: 0 30px !important;
-            width: 100%;
-            background-color: #f8fafc;
-            text-align: center;
-        }
-
-        .btn-reset {
-            height: 80px;
-            border-radius: 30px;
-            background: #f1f5f9;
-            color: #64748b;
+        .input-label {
+            font-size: 1.4rem;
             font-weight: 800;
-            font-size: 1.5rem;
-            width: 100%;
-            transition: all 0.2s;
+            color: #94a3b8;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        .btn-reset:active { background: #e2e8f0; }
 
-        .btn-giant {
-            height: 180px;
-            border-radius: 50px;
+        input { 
+            height: 90px !important;
+            font-size: 2.2rem !important;
+            font-weight: 700 !important;
+            border: none !important;
+            padding: 0 !important;
+            width: 100%;
+            background: transparent !important;
+            color: #1e293b;
+            outline: none !important;
+        }
+
+        /* TOMBOL TRANSAKSI */
+        .btn-action {
+            height: 160px;
+            border-radius: 45px;
             font-weight: 800;
-            font-size: 2.6rem; 
+            font-size: 2.2rem;
             display: flex;
             align-items: center;
             justify-content: center;
             width: 100%;
-            margin-bottom: 30px;
+            transition: all 0.2s;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
         }
+        .btn-action:active { transform: scale(0.96); }
 
         .nav-icon-box { transform: scale(1.6); }
         .nav-label { font-size: 1.3rem; font-weight: 700; margin-top: 10px; }
@@ -118,36 +119,45 @@
                 <h2 class="text-3xl font-black text-slate-800 mb-8 text-center uppercase tracking-widest flex justify-center items-center gap-4">
                     <span>📅</span> Filter Riwayat
                 </h2>
-                
-                <div class="filter-grid">
-                    <div>
-                        <span class="filter-label">DARI</span>
-                        <input id="f-start" onchange="render()" type="date">
-                    </div>
-                    <div>
-                        <span class="filter-label">SAMPAI</span>
-                        <input id="f-end" onchange="render()" type="date">
-                    </div>
+                <div class="grid grid-cols-2 gap-6 mb-6">
+                    <div><input id="f-start" onchange="render()" type="date" style="height:80px!important; font-size:1.5rem!important; border: 2px solid #f1f5f9!important; border-radius: 25px!important; text-align:center;"></div>
+                    <div><input id="f-end" onchange="render()" type="date" style="height:80px!important; font-size:1.5rem!important; border: 2px solid #f1f5f9!important; border-radius: 25px!important; text-align:center;"></div>
                 </div>
-                
-                <button onclick="resetFilter()" class="btn-reset">
-                    HAPUS FILTER
-                </button>
+                <button onclick="resetFilter()" class="w-full h-16 bg-slate-100 rounded-2xl text-lg font-bold text-slate-500 uppercase">Hapus Filter</button>
             </div>
-
             <div class="card-neo"><div class="h-[550px]"><canvas id="myChart"></canvas></div></div>
             <div id="list" class="space-y-10"></div>
         </div>
 
         <div id="page-add" class="page">
             <div class="card-neo">
-                <h2 class="text-6xl font-black text-center mb-16 text-indigo-600">INPUT BARU</h2>
-                <input id="date-input" type="date">
-                <input id="desc" type="text" placeholder="Deskripsi">
-                <input id="amount" type="number" placeholder="Nominal Rp" class="text-indigo-600 font-black">
-                <div class="pt-10 flex flex-col gap-6">
-                    <button onclick="save('income')" class="btn-giant bg-emerald-500 text-white">UANG MASUK</button>
-                    <button onclick="save('expense')" class="btn-giant bg-rose-500 text-white">UANG KELUAR</button>
+                <div class="text-center mb-16">
+                    <h2 class="text-6xl font-black text-indigo-600 mb-4 uppercase">Transaksi</h2>
+                    <div class="h-2 w-32 bg-indigo-100 mx-auto rounded-full"></div>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label"><span>📅</span> Tanggal</label>
+                    <input id="date-input" type="date">
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label"><span>📝</span> Keterangan</label>
+                    <input id="desc" type="text" placeholder="Beli apa hari ini?">
+                </div>
+
+                <div class="input-group" style="background: #f5f3ff; border-left: 15px solid #6366f1;">
+                    <label class="input-label" style="color: #6366f1;"><span>💰</span> Nominal (Rp)</label>
+                    <input id="amount" type="number" placeholder="0" class="text-indigo-600">
+                </div>
+
+                <div class="pt-8 space-y-6">
+                    <button onclick="save('income')" class="btn-action bg-emerald-500 text-white">
+                        <span class="mr-4">📥</span> SIMPAN MASUK
+                    </button>
+                    <button onclick="save('expense')" class="btn-action bg-rose-500 text-white">
+                        <span class="mr-4">📤</span> SIMPAN KELUAR
+                    </button>
                 </div>
             </div>
         </div>
@@ -156,7 +166,7 @@
             <div class="card-neo">
                 <h2 class="text-6xl font-black text-center mb-12">NOTEBOOK</h2>
                 <textarea id="note-input" class="w-full text-3xl p-10 rounded-[50px] border-4 border-slate-100 bg-slate-50 mb-8 outline-none" style="height: 700px;" placeholder="Tulis catatan..."></textarea>
-                <button onclick="saveNote()" style="height: 100px;" class="btn-giant bg-slate-900 text-white text-2xl">SIMPAN CATATAN</button>
+                <button onclick="saveNote()" style="height: 100px;" class="btn-action bg-slate-900 text-white text-2xl">SIMPAN CATATAN</button>
             </div>
             <div id="note-list" class="mt-12 space-y-10"></div>
         </div>
@@ -178,8 +188,8 @@
     </nav>
 
     <script>
-        let data = JSON.parse(localStorage.getItem('wallet_clean_v3')) || [];
-        let notes = JSON.parse(localStorage.getItem('notes_clean_v3')) || [];
+        let data = JSON.parse(localStorage.getItem('wallet_premium_v4')) || [];
+        let notes = JSON.parse(localStorage.getItem('notes_premium_v4')) || [];
         let myChart = null;
 
         function showPage(p) {
@@ -243,9 +253,9 @@
             const val = parseInt(document.getElementById('amount').value);
             const desc = document.getElementById('desc').value;
             const date = document.getElementById('date-input').value;
-            if(!val || !desc || !date) return alert("Data belum lengkap!");
+            if(!val || !desc || !date) return alert("Ups! Lengkapi semua data dulu ya.");
             data.push({val, desc, date, type});
-            localStorage.setItem('wallet_clean_v3', JSON.stringify(data));
+            localStorage.setItem('wallet_premium_v4', JSON.stringify(data));
             document.getElementById('amount').value = '';
             document.getElementById('desc').value = '';
             showPage('home');
@@ -255,7 +265,7 @@
             const text = document.getElementById('note-input').value;
             if(!text) return;
             notes.unshift({ text, time: new Date().toLocaleDateString() });
-            localStorage.setItem('notes_clean_v3', JSON.stringify(notes));
+            localStorage.setItem('notes_premium_v4', JSON.stringify(notes));
             document.getElementById('note-input').value = '';
             renderNotes();
         }
