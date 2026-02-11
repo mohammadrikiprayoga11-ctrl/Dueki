@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Dompetku Pro v10.4 - Double Size</title>
+    <title>Dompetku Pro v10.4 - Giant Edition</title>
     <meta name="theme-color" content="#4f46e5">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -12,39 +12,57 @@
         
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif;
-            padding-bottom: calc(env(safe-area-inset-bottom) + 180px); /* Double padding */
+            -webkit-tap-highlight-color: transparent; 
+            padding-bottom: calc(env(safe-area-inset-bottom) + 160px);
             background-color: #F8FAFC;
         }
 
         /* Skala Header */
         .glass-header {
             background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
-            padding-top: 5rem; /* diperbesar */
-            padding-bottom: 5rem;
-            border-bottom-left-radius: 6rem;
-            border-bottom-right-radius: 6rem;
+            box-shadow: 0 20px 50px -15px rgba(79, 70, 229, 0.5);
+            padding-top: 4rem;
+            padding-bottom: 4rem;
+            border-bottom-left-radius: 5rem;
+            border-bottom-right-radius: 5rem;
         }
 
-        /* Skala Navigasi Bawah */
+        /* Navigasi Bawah Raksasa */
         .nav-blur {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
-            height: calc(150px + env(safe-area-inset-bottom)); /* Dari 75px ke 150px */
+            -webkit-backdrop-filter: blur(20px);
+            height: calc(130px + env(safe-area-inset-bottom));
+            border-top: 2px solid #f1f5f9;
         }
 
         .card-neo {
             background: #ffffff;
-            border: 2px solid rgba(226, 232, 240, 0.6);
-            box-shadow: 0 16px 30px -6px rgba(0, 0, 0, 0.04);
-            border-radius: 56px; /* Double radius */
+            border: 2px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.05);
+            border-radius: 50px;
         }
 
-        /* Skala Tombol Utama */
-        .btn-main {
-            height: 116px; /* Dari 58px ke 116px */
-            border-radius: 40px;
-            font-size: 1.5rem; /* Teks lebih besar */
+        .page { display: none; opacity: 0; transform: translateY(20px); transition: all 0.4s ease; }
+        .page-active { display: block; opacity: 1; transform: translateY(0); }
+
+        /* Input & Tombol Raksasa */
+        .btn-giant {
+            height: 100px;
+            border-radius: 35px;
             font-weight: 800;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s active;
+        }
+        .btn-giant:active { transform: scale(0.96); }
+
+        #amount-input {
+            height: 130px;
+            font-size: 4.5rem !important;
+            border-radius: 40px;
         }
 
         .custom-scroll::-webkit-scrollbar { display: none; }
@@ -52,67 +70,185 @@
 </head>
 <body class="text-slate-900">
 
-    <header class="glass-header px-10 text-white sticky top-0 z-40">
+    <header class="glass-header px-8 text-white sticky top-0 z-40">
         <div class="flex justify-between items-center mb-10">
-            <div class="flex items-center gap-6">
-                <div class="w-20 h-20 bg-white/20 rounded-3xl flex items-center justify-center backdrop-blur-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                </div>
-                <h1 class="text-3xl font-black tracking-tight">DOMPETKU</h1>
+            <h1 class="text-2xl font-black tracking-tighter">DOMPETKU <span class="text-indigo-200">PRO</span></h1>
+            <div class="bg-black/20 p-2 rounded-3xl flex backdrop-blur-lg">
+                <button onclick="switchTab(1)" id="btn-tab-1" class="px-6 py-3 rounded-2xl text-sm font-bold bg-white text-indigo-600 shadow-lg">AKUN 1</button>
+                <button onclick="switchTab(2)" id="btn-tab-2" class="px-6 py-3 rounded-2xl text-sm font-bold">AKUN 2</button>
             </div>
         </div>
 
-        <div class="text-center space-y-10">
+        <div class="text-center space-y-8">
             <div>
-                <p class="text-lg opacity-70 mb-2 font-bold tracking-[0.2em] uppercase">Total Saldo</p>
-                <h1 id="total-balance" class="text-7xl font-black drop-shadow-lg">Rp 0</h1>
+                <p class="text-sm opacity-70 mb-2 font-bold tracking-[0.2em] uppercase">Total Saldo</p>
+                <h1 id="total-balance" class="text-6xl font-black tracking-tight drop-shadow-xl">Rp 0</h1>
             </div>
-            <div class="grid grid-cols-2 gap-8">
-                <div class="bg-white/10 p-8 rounded-[3rem] border border-white/10">
-                    <p class="text-sm uppercase font-bold opacity-60 mb-2">Pemasukan</p>
-                    <p id="sum-income" class="text-2xl font-bold text-emerald-300">Rp 0</p>
+            <div class="grid grid-cols-2 gap-6">
+                <div class="bg-white/10 p-6 rounded-[2.5rem] border border-white/10">
+                    <p class="text-xs uppercase font-bold opacity-60 mb-1">Masuk</p>
+                    <p id="sum-income" class="text-xl font-bold text-emerald-300">Rp 0</p>
                 </div>
-                <div class="bg-white/10 p-8 rounded-[3rem] border border-white/10">
-                    <p class="text-sm uppercase font-bold opacity-60 mb-2">Pengeluaran</p>
-                    <p id="sum-expense" class="text-2xl font-bold text-rose-300">Rp 0</p>
+                <div class="bg-white/10 p-6 rounded-[2.5rem] border border-white/10">
+                    <p class="text-xs uppercase font-bold opacity-60 mb-1">Keluar</p>
+                    <p id="sum-expense" class="text-xl font-bold text-rose-300">Rp 0</p>
                 </div>
             </div>
         </div>
     </header>
 
-    <main class="max-w-2xl mx-auto px-10">
-        <div id="page-add" class="pt-16">
-            <div class="card-neo p-12 space-y-12">
-                <h2 class="text-4xl font-black text-center text-slate-800">INPUT DATA</h2>
+    <main class="max-w-2xl mx-auto pb-20">
+        <div id="page-home" class="page page-active pt-10 px-6">
+            <div class="card-neo p-8 mb-10">
+                <div class="relative h-80">
+                    <canvas id="myChart"></canvas>
+                </div>
+            </div>
+            <h3 class="font-black text-2xl mb-6 px-4">Riwayat Transaksi</h3>
+            <div id="list" class="space-y-6"></div>
+        </div>
+
+        <div id="page-add" class="page pt-10 px-6">
+            <div class="card-neo p-10 space-y-10">
+                <h2 class="text-3xl font-black text-center text-slate-800 uppercase">Input Transaksi</h2>
                 
                 <div class="space-y-8">
                     <div>
-                        <label class="text-lg font-bold text-slate-400 ml-4 mb-4 block">TANGGAL</label>
-                        <input id="date-input" type="date" class="w-full h-24 px-8 bg-slate-50 rounded-[2.5rem] text-2xl font-bold outline-none">
+                        <label class="text-sm font-black text-slate-400 ml-4 mb-3 block uppercase">Tanggal</label>
+                        <input id="date-input" type="date" class="w-full h-20 px-8 bg-slate-50 rounded-3xl text-xl font-bold border-2 border-slate-100 outline-none focus:border-indigo-500">
+                    </div>
+
+                    <div class="grid grid-cols-4 gap-4">
+                        <select id="cat-icon" class="col-span-1 h-20 bg-slate-50 rounded-3xl text-4xl text-center border-2 border-slate-100 outline-none">
+                            <option>💰</option><option>🍔</option><option>🚗</option><option>🏠</option><option>⚡</option><option>🛒</option>
+                        </select>
+                        <input id="desc" type="text" placeholder="Keterangan..." class="col-span-3 h-20 px-8 bg-slate-50 rounded-3xl text-xl font-bold border-2 border-slate-100 outline-none">
                     </div>
 
                     <div>
-                        <label class="text-lg font-bold text-slate-400 ml-4 mb-4 block">NOMINAL (RP)</label>
-                        <input id="amount" type="number" placeholder="0" class="w-full h-32 px-10 bg-indigo-50/50 rounded-[3rem] font-black text-6xl text-indigo-600 outline-none">
+                        <label class="text-sm font-black text-slate-400 ml-4 mb-3 block uppercase">Nominal (Rp)</label>
+                        <input id="amount-input" type="number" placeholder="0" class="w-full px-10 bg-indigo-50 font-black text-indigo-600 outline-none border-4 border-indigo-100">
                     </div>
 
-                    <div class="flex gap-6 pt-10">
-                        <button onclick="save('income')" class="btn-main flex-1 bg-emerald-500 text-white text-3xl shadow-2xl">MASUK</button>
-                        <button onclick="save('expense')" class="btn-main flex-1 bg-rose-500 text-white text-3xl shadow-2xl">KELUAR</button>
+                    <div class="flex items-center justify-between p-8 bg-slate-50 rounded-[35px] border-2 border-dashed border-slate-200">
+                        <span class="text-xl font-black text-slate-600">PENTING?</span>
+                        <input type="checkbox" id="important-check" class="w-10 h-10 rounded-xl accent-indigo-600">
+                    </div>
+
+                    <div class="flex flex-col gap-5 pt-4">
+                        <button onclick="save('income')" class="btn-giant bg-emerald-500 text-white shadow-2xl shadow-emerald-200">SIMPAN MASUK (+)</button>
+                        <button onclick="save('expense')" class="btn-giant bg-rose-500 text-white shadow-2xl shadow-rose-200">SIMPAN KELUAR (-)</button>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <nav class="fixed bottom-0 left-0 right-0 nav-blur border-t border-slate-100 px-16 flex justify-between items-center z-50 rounded-t-[4rem]">
-        <button class="flex flex-col items-center gap-4 text-indigo-600">
-            <div class="p-6 rounded-[2rem] bg-indigo-50">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
-            </div>
-            <span class="text-sm font-black uppercase">Beranda</span>
+    <nav class="fixed bottom-0 left-0 right-0 nav-blur px-12 flex justify-between items-center z-50 rounded-t-[4rem] shadow-2xl">
+        <button onclick="showPage('home')" id="nav-home" class="flex flex-col items-center gap-3 text-indigo-600 scale-125">
+            <div class="p-4 rounded-3xl bg-indigo-50"><svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg></div>
+            <span class="text-[12px] font-black uppercase">Beranda</span>
         </button>
-        </nav>
+        <button onclick="showPage('add')" id="nav-add" class="flex flex-col items-center gap-3 text-slate-400">
+            <div class="p-4 rounded-3xl"><svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg></div>
+            <span class="text-[12px] font-black uppercase">Tambah</span>
+        </button>
+    </nav>
 
+    <script>
+        let currentTab = 1;
+        let data1 = JSON.parse(localStorage.getItem('dompet_v11_1')) || [];
+        let data2 = JSON.parse(localStorage.getItem('dompet_v11_2')) || [];
+        let myChart = null;
+
+        function switchTab(t) {
+            currentTab = t;
+            document.getElementById('btn-tab-1').className = t===1 ? 'px-6 py-3 rounded-2xl text-sm font-bold bg-white text-indigo-600 shadow-lg' : 'px-6 py-3 rounded-2xl text-sm font-bold text-white';
+            document.getElementById('btn-tab-2').className = t===2 ? 'px-6 py-3 rounded-2xl text-sm font-bold bg-white text-indigo-600 shadow-lg' : 'px-6 py-3 rounded-2xl text-sm font-bold text-white';
+            render();
+        }
+
+        function showPage(p) {
+            document.querySelectorAll('.page').forEach(el => el.classList.remove('page-active'));
+            document.getElementById('page-'+p).classList.add('page-active');
+            
+            ['home', 'add'].forEach(nav => {
+                const el = document.getElementById('nav-'+nav);
+                if(nav === p) {
+                    el.classList.add('text-indigo-600', 'scale-125');
+                    el.classList.remove('text-slate-400');
+                    el.querySelector('div').classList.add('bg-indigo-50');
+                } else {
+                    el.classList.remove('text-indigo-600', 'scale-125');
+                    el.classList.add('text-slate-400');
+                    el.querySelector('div').classList.remove('bg-indigo-50');
+                }
+            });
+            if(p === 'home') render();
+            window.scrollTo(0,0);
+        }
+
+        function render() {
+            const list = document.getElementById('list');
+            const activeData = currentTab === 1 ? data1 : data2;
+            let tin = 0, tout = 0;
+            list.innerHTML = '';
+
+            activeData.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach((item, i) => {
+                if(item.type === 'income') tin += item.val; else tout += item.val;
+                list.innerHTML += `
+                    <div class="flex items-center gap-6 bg-white p-8 rounded-[3rem] border-2 border-slate-50 shadow-sm ${item.isImportant ? 'ring-4 ring-yellow-400' : ''}">
+                        <div class="w-20 h-20 rounded-[1.5rem] flex items-center justify-center text-4xl ${item.type==='income' ? 'bg-emerald-50' : 'bg-rose-50'}">${item.icon}</div>
+                        <div class="flex-1">
+                            <p class="text-sm text-slate-400 font-bold uppercase">${item.date}</p>
+                            <p class="font-black text-2xl text-slate-800">${item.desc}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-black text-2xl ${item.type==='income' ? 'text-emerald-500' : 'text-rose-500'}">${item.type==='income'?'+':'-'}${item.val.toLocaleString()}</p>
+                        </div>
+                    </div>`;
+            });
+
+            document.getElementById('total-balance').innerText = `Rp ${(tin-tout).toLocaleString()}`;
+            document.getElementById('sum-income').innerText = `Rp ${tin.toLocaleString()}`;
+            document.getElementById('sum-expense').innerText = `Rp ${tout.toLocaleString()}`;
+            updateChart(tin, tout);
+        }
+
+        function updateChart(tin, tout) {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            if(myChart) myChart.destroy();
+            myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [tin||1, tout||0],
+                        backgroundColor: ['#10b981', '#f43f5e'],
+                        borderWidth: 10,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: { cutout: '70%', plugins: { legend: { display: false } }, maintainAspectRatio: false }
+            });
+        }
+
+        function save(type) {
+            const val = parseInt(document.getElementById('amount-input').value);
+            const desc = document.getElementById('desc').value;
+            const date = document.getElementById('date-input').value;
+            if(!val || !desc || !date) return alert("Isi semua data!");
+
+            const item = { val, desc, date, type, icon: document.getElementById('cat-icon').value, isImportant: document.getElementById('important-check').checked };
+            if(currentTab === 1) data1.push(item); else data2.push(item);
+            
+            localStorage.setItem(currentTab===1?'dompet_v11_1':'dompet_v11_2', JSON.stringify(currentTab===1?data1:data2));
+            document.getElementById('amount-input').value = '';
+            document.getElementById('desc').value = '';
+            showPage('home');
+        }
+
+        document.getElementById('date-input').valueAsDate = new Date();
+        render();
+    </script>
 </body>
 </html>
