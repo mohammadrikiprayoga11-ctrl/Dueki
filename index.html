@@ -1,55 +1,135 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catatanku v7 - Upgrade Hutang</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #f0f2f5; color: #1e293b; padding-bottom: 120px; }
+        .font-black { font-family: 'Archivo Black', sans-serif; }
+        .card-neo { background: white; border: 4px solid #1e293b; border-radius: 30px; box-shadow: 8px 8px 0px #1e293b; transition: all 0.2s; padding: 20px; }
+        .page { display: none; padding: 20px; animation: fadeIn 0.3s ease; }
+        .page-active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-blur { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); border-top: 4px solid #1e293b; height: 90px; }
+        .btn-save { width: 100%; padding: 20px; border-radius: 20px; border: 4px solid #1e293b; font-family: 'Archivo Black', sans-serif; font-size: 1.2rem; background: #6366f1; color: white; box-shadow: 4px 4px 0px #1e293b; }
+        .btn-save:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #1e293b; }
+        .recap-bar { height: 12px; background: #e2e8f0; border-radius: 10px; overflow: hidden; border: 2px solid #1e293b; }
+        .recap-fill { height: 100%; transition: width 0.5s ease; }
+    </style>
+</head>
+<body>
+
+    <main id="app">
+        <div id="page-home" class="page page-active">
+            <div class="card-neo mb-8 bg-indigo-600 text-white relative overflow-hidden">
+                <div class="relative z-10">
+                    <p class="text-lg font-bold opacity-80">Saldo Total</p>
+                    <h1 id="total-balance" class="text-4xl font-black mt-2">Rp 0</h1>
+                </div>
+                <div class="absolute right-[-20px] top-[-20px] opacity-20">
+                    <div style="width: 150px; height: 150px;">
+                        <canvas id="myChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-4 mb-8">
+                <input type="date" id="f-start" class="card-neo flex-1 p-4 text-sm font-bold outline-none" onchange="render()">
+                <input type="date" id="f-end" class="card-neo flex-1 p-4 text-sm font-bold outline-none" onchange="render()">
+                <button onclick="resetFilter()" class="card-neo bg-slate-100 p-4 font-black">❌</button>
+            </div>
+
+            <div id="list" class="space-y-4"></div>
+        </div>
+
+        <div id="page-add" class="page">
+            <div class="card-neo mb-8">
+                <h2 class="text-3xl font-black mb-6 text-center">TRANSAKSI BARU</h2>
+                <input type="number" id="amount" class="w-full text-4xl p-6 rounded-[30px] border-4 border-slate-100 bg-slate-50 outline-none font-black mb-6" placeholder="0">
+                <input type="text" id="desc" class="w-full text-xl p-6 rounded-[30px] border-2 border-slate-100 bg-slate-50 outline-none mb-6" placeholder="Keterangan apa?">
+                <input type="date" id="date-input" class="w-full text-xl p-6 rounded-[30px] border-2 border-slate-100 bg-slate-50 outline-none mb-8">
+                
+                <div class="grid grid-cols-2 gap-6">
+                    <button onclick="save('income')" class="btn-save !bg-emerald-500">MASUK</button>
+                    <button onclick="save('expense')" class="btn-save !bg-rose-500">KELUAR</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-debt" class="page">
+            <h2 class="text-4xl font-black mb-8 px-4 text-center">CATAT HUTANG</h2>
+            <div class="card-neo mb-8">
+                <input type="number" id="debt-amount" class="w-full text-2xl p-4 mb-4 rounded-2xl border-2 border-slate-100 bg-slate-50 outline-none" placeholder="Jumlah (Rp)">
+                <input type="text" id="debt-desc" class="w-full text-xl p-4 mb-4 rounded-2xl border-2 border-slate-100 bg-slate-50 outline-none" placeholder="Nama Orang / Keperluan">
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="saveDebt('add')" class="btn-save !bg-rose-500 text-white">TAMBAH</button>
+                    <button onclick="saveDebt('subtract')" class="btn-save !bg-emerald-500 text-white">KURANG</button>
+                </div>
+            </div>
+            <div id="debt-list" class="space-y-4"></div>
+        </div>
+
+        <div id="page-recap" class="page">
             <h2 class="text-4xl font-black mb-8 px-4 text-center">REKAP BULANAN</h2>
             <div id="recap-container" class="space-y-8"></div>
         </div>
 
         <div id="page-notes" class="page">
-            <div class="card-neo">
-                <textarea id="note-input" class="w-full text-2xl p-6 rounded-[30px] border-2 border-slate-100 bg-slate-50 outline-none" style="height: 400px;" placeholder="Tulis sesuatu..."></textarea>
-                <button onclick="saveNote()" class="btn-save">SIMPAN CATATAN</button>
+            <div class="card-neo mb-6">
+                <textarea id="note-input" class="w-full text-2xl p-6 rounded-[30px] border-2 border-slate-100 bg-slate-50 outline-none" style="height: 200px;" placeholder="Tulis sesuatu..."></textarea>
+                <button onclick="saveNote()" class="btn-save mt-4">SIMPAN CATATAN</button>
             </div>
             <div id="note-list" class="space-y-6"></div>
         </div>
     </main>
 
-    <nav class="fixed bottom-0 left-0 right-0 nav-blur flex justify-around items-center z-50 rounded-t-[60px] px-2">
+    <nav class="fixed bottom-0 left-0 right-0 nav-blur flex justify-around items-center z-50 rounded-t-[40px] px-2 shadow-2xl">
         <button onclick="showPage('home')" id="nav-home" class="flex flex-col items-center text-indigo-600">
-            <span class="text-4xl">🏠</span><span class="nav-label">HOME</span>
+            <span class="text-3xl">🏠</span><span class="text-[10px] font-black uppercase">HOME</span>
         </button>
         <button onclick="showPage('add')" id="nav-add" class="flex flex-col items-center text-slate-400">
-            <span class="text-4xl">➕</span><span class="nav-label">TAMBAH</span>
+            <span class="text-3xl">➕</span><span class="text-[10px] font-black uppercase">TAMBAH</span>
+        </button>
+        <button onclick="showPage('debt')" id="nav-debt" class="flex flex-col items-center text-slate-400">
+            <span class="text-3xl">🤝</span><span class="text-[10px] font-black uppercase">HUTANG</span>
         </button>
         <button onclick="showPage('recap')" id="nav-recap" class="flex flex-col items-center text-slate-400">
-            <span class="text-4xl">📊</span><span class="nav-label">REKAP</span>
+            <span class="text-3xl">📊</span><span class="text-[10px] font-black uppercase">REKAP</span>
         </button>
         <button onclick="showPage('notes')" id="nav-notes" class="flex flex-col items-center text-slate-400">
-            <span class="text-4xl">📝</span><span class="nav-label">NOTE</span>
+            <span class="text-3xl">📝</span><span class="text-[10px] font-black uppercase">NOTE</span>
         </button>
     </nav>
 
     <script>
         let data = JSON.parse(localStorage.getItem('catatanku_v7_data')) || [];
         let notes = JSON.parse(localStorage.getItem('catatanku_v7_notes')) || [];
+        let debts = JSON.parse(localStorage.getItem('catatanku_v7_debts')) || [];
         let myChart = null;
 
         function showPage(p) {
             document.querySelectorAll('.page').forEach(el => el.classList.remove('page-active'));
             document.getElementById('page-'+p).classList.add('page-active');
-            ['home', 'add', 'recap', 'notes'].forEach(nav => {
+            
+            ['home', 'add', 'recap', 'notes', 'debt'].forEach(nav => {
                 const el = document.getElementById('nav-'+nav);
-                el.className = (nav === p) ? "flex flex-col items-center text-indigo-600 scale-110 transition-all" : "flex flex-col items-center text-slate-400";
+                if(el) {
+                    el.className = (nav === p) ? "flex flex-col items-center text-indigo-600 scale-110 transition-all" : "flex flex-col items-center text-slate-400";
+                }
             });
+
             if(p === 'home') render();
             if(p === 'recap') generateMonthlyRecap();
             if(p === 'notes') renderNotes();
+            if(p === 'debt') renderDebts();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function resetFilter() {
-            document.getElementById('f-start').value = '';
-            document.getElementById('f-end').value = '';
-            render();
-        }
-
+        // --- FINANCE LOGIC ---
         function save(type) {
             const val = parseInt(document.getElementById('amount').value);
             const desc = document.getElementById('desc').value;
@@ -72,18 +152,24 @@
             data.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(item => {
                 if((!fStart || item.date >= fStart) && (!fEnd || item.date <= fEnd)) {
                     if(item.type === 'income') tin += item.val; else tout += item.val;
-                    list.innerHTML += `<div class="card-neo flex items-center gap-6 p-8 mb-4">
-                        <div class="text-3xl">${item.type==='income'?'💰':'💸'}</div>
+                    list.innerHTML += `<div class="card-neo flex items-center gap-6 p-6 mb-4">
+                        <div class="text-2xl">${item.type==='income'?'💰':'💸'}</div>
                         <div class="flex-1">
-                            <p class="text-sm font-bold text-slate-400">${item.date}</p>
-                            <p class="text-2xl font-black">${item.desc}</p>
+                            <p class="text-xs font-bold text-slate-400">${item.date}</p>
+                            <p class="text-lg font-black">${item.desc}</p>
                         </div>
-                        <p class="text-2xl font-black ${item.type==='income'?'text-emerald-500':'text-rose-500'}">${item.val.toLocaleString()}</p>
+                        <p class="text-lg font-black ${item.type==='income'?'text-emerald-500':'text-rose-500'}">${item.val.toLocaleString()}</p>
                     </div>`;
                 }
             });
             document.getElementById('total-balance').innerText = `Rp ${(tin-tout).toLocaleString()}`;
             updateChart(tin, tout);
+        }
+
+        function resetFilter() {
+            document.getElementById('f-start').value = '';
+            document.getElementById('f-end').value = '';
+            render();
         }
 
         function updateChart(tin, tout) {
@@ -92,6 +178,47 @@
             myChart = new Chart(ctx, { type: 'doughnut', data: { datasets: [{ data: [tin||1, tout||0], backgroundColor: ['#10b981', '#f43f5e'], borderWidth: 0 }]}, options: { cutout: '80%', plugins: { legend: { display: false } }, maintainAspectRatio: false } });
         }
 
+        // --- DEBT LOGIC ---
+        function saveDebt(type) {
+            const val = parseInt(document.getElementById('debt-amount').value);
+            const desc = document.getElementById('debt-desc').value;
+            const date = new Date().toLocaleDateString('id-ID');
+            if(!val || !desc) return alert("Isi jumlah dan nama!");
+            
+            debts.unshift({val, desc, date, type});
+            localStorage.setItem('catatanku_v7_debts', JSON.stringify(debts));
+            
+            document.getElementById('debt-amount').value = '';
+            document.getElementById('debt-desc').value = '';
+            renderDebts();
+        }
+
+        function renderDebts() {
+            const dl = document.getElementById('debt-list');
+            let total = 0;
+            dl.innerHTML = '';
+            
+            debts.forEach(d => {
+                if(d.type === 'add') total += d.val; else total -= d.val;
+                dl.innerHTML += `<div class="card-neo flex items-center justify-between p-4 border-l-[10px] ${d.type==='add'?'border-rose-500':'border-emerald-500'}">
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-400">${d.date}</p>
+                        <p class="text-md font-black uppercase">${d.desc}</p>
+                    </div>
+                    <p class="text-lg font-black ${d.type==='add'?'text-rose-500':'text-emerald-500'}">
+                        ${d.type==='add'?'+':'-'} ${d.val.toLocaleString()}
+                    </p>
+                </div>`;
+            });
+
+            const header = `<div class="card-neo bg-slate-900 text-white mb-6">
+                <p class="text-xs opacity-60 uppercase font-bold">Total Sisa Hutang</p>
+                <h2 class="text-3xl font-black text-rose-400">Rp ${total.toLocaleString()}</h2>
+            </div>`;
+            dl.insertAdjacentHTML('afterbegin', header);
+        }
+
+        // --- RECAP & NOTES LOGIC ---
         function generateMonthlyRecap() {
             const container = document.getElementById('recap-container');
             container.innerHTML = '';
@@ -112,7 +239,7 @@
         function saveNote() {
             const text = document.getElementById('note-input').value;
             if(!text) return;
-            notes.unshift({ text, time: new Date().toLocaleDateString() });
+            notes.unshift({ text, time: new Date().toLocaleDateString('id-ID') });
             localStorage.setItem('catatanku_v7_notes', JSON.stringify(notes));
             document.getElementById('note-input').value = '';
             renderNotes();
@@ -121,7 +248,7 @@
         function renderNotes() {
             const nl = document.getElementById('note-list');
             nl.innerHTML = '';
-            notes.forEach(n => { nl.innerHTML += `<div class="card-neo" style="border-left: 10px solid #6366f1"><p class="text-xl font-bold text-slate-700">${n.text}</p></div>`; });
+            notes.forEach(n => { nl.innerHTML += `<div class="card-neo" style="border-left: 10px solid #6366f1"><p class="text-sm text-slate-400 mb-1">${n.time}</p><p class="text-lg font-bold text-slate-700">${n.text}</p></div>`; });
         }
 
         document.getElementById('date-input').valueAsDate = new Date();
@@ -129,4 +256,3 @@
     </script>
 </body>
 </html>
-
